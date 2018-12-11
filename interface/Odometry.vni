@@ -1,0 +1,20 @@
+package vehicle;
+
+import math.Vector3d;
+
+class Odometry extends basic.Transform3D {
+	
+	Vector3d rotation;					// (roll, pitch, yaw) [rad]
+	Vector3d position;					// center rear axle (x, y, z) [m]
+	
+	Vector3d velocity;					// center rear axle (x, y, z) [m/s]
+	Vector3d angular_velocity;			// (roll, pitch, yaw) [rad/s]
+	Vector3d acceleration;				// (x, y, z) [m/s^2]
+	
+	Vector3d sensor_gyro_bias;			// current gyro bias estimate [rad/s]
+	double speed_factor = 1;			// current speed factor [1]
+	bool is_timeout;					// if we lost velocity input
+	
+	map<int, Vector3d> sensor_gyro_bias_map;		// [C]
+	
+}

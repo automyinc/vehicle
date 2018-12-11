@@ -1,0 +1,7 @@
+Package: automy-vehicle
+Section: base
+Priority: optional
+Depends: vnx-base, automy-math, automy-basic
+Maintainer: Max Wittal <max.wittal@automyinc.com>
+Description: Automy vehicle package
+Architecture: all

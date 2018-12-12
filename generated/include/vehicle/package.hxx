@@ -6,6 +6,7 @@
 
 #include <vnx/Type.h>
 
+#include <basic/package.hxx>
 #include <math/package.hxx>
 
 

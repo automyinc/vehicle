@@ -1,0 +1,9 @@
+package vehicle;
+
+module GPIO_PPS_Receiver {
+	
+	vnx.TopicPtr output = "vehicle.pps_signal";
+	
+	string device;
+	
+}

@@ -3,7 +3,12 @@
 
 #include <vnx/Topic.h>
 
+#include <vehicle/GPIO_PPS_ReceiverBase.hxx>
+#include <vehicle/GPS_Info.hxx>
 #include <vehicle/Odometry.hxx>
+#include <vehicle/PPS_Signal.hxx>
+#include <vehicle/UBX_Packet.hxx>
+#include <vehicle/UbloxReceiverBase.hxx>
 
 
 
@@ -11,7 +16,12 @@ namespace vehicle {
 
 
 static void register_all_types() {
+	vnx::register_type_code(vehicle::GPIO_PPS_ReceiverBase::create_type_code());
+	vnx::register_type_code(vehicle::GPS_Info::create_type_code());
 	vnx::register_type_code(vehicle::Odometry::create_type_code());
+	vnx::register_type_code(vehicle::PPS_Signal::create_type_code());
+	vnx::register_type_code(vehicle::UBX_Packet::create_type_code());
+	vnx::register_type_code(vehicle::UbloxReceiverBase::create_type_code());
 }
 
 static struct vnx_static_init {

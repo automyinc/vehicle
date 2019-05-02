@@ -1,0 +1,18 @@
+package vehicle;
+
+module UbloxReceiver {
+	
+	vnx.TopicPtr output = "vehicle.gps_info";
+	vnx.TopicPtr topic_msgs = "vehicle.ubx_msgs";
+	vnx.TopicPtr input_pps = "vehicle.pps_signal";
+	
+	string port = "/dev/ttyACM0";
+	
+	int baudrate = 115200;
+	
+	math.Vector3d antenna_pos;					// relative to rear axle (x, y, z) [m]
+	
+	void handle(UBX_Packet sample);
+	void handle(PPS_Signal sample);
+	
+}

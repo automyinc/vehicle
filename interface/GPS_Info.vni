@@ -1,0 +1,29 @@
+package vehicle;
+
+class GPS_Info {
+	
+	long time;					// [usec]
+	long gps_time;				// POSIX time (without leap seconds) [usec]
+	uint time_of_week;			// [ms]
+	
+	bool have_fix;				// if we have a 3D fix
+	bool have_pps;				// if we have PPS signal
+	
+	double latitude;			// [deg]
+	double longitude;			// [deg]
+	double height;				// [m]
+	double heading;				// zero at north, clockwise positive, 0 to 360 [deg]
+	
+	double speed;				// 3D velocity norm [m/s]
+	double vel_north;			// [m/s]
+	double vel_east;			// [m/s]
+	double vel_up;				// [m/s]
+	
+	float hdop = -1;
+	float vdop = -1;
+	
+	int num_sats = -1;
+	
+	math.Vector3d antenna_pos;
+	
+}

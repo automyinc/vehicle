@@ -12,9 +12,14 @@ file(GLOB GENERATED_SOURCE_FILES generated/src/*.cpp)
 
 add_library(automy_vehicle SHARED
 	${GENERATED_SOURCE_FILES}
+	src/UbloxReceiver.cpp
+	src/GPIO_PPS_Receiver.cpp
 )
 
-target_include_directories(automy_vehicle PUBLIC include generated/include)
+target_include_directories(automy_vehicle
+	PUBLIC include generated/include
+	PRIVATE src/
+)
 
 target_link_libraries(automy_vehicle automy_basic automy_math vnx_base)
 

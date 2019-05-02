@@ -1,0 +1,12 @@
+package vehicle;
+
+class UBX_Packet {
+	
+	long time;
+	
+	uchar class_id;
+	uchar msg_id;
+	
+	vector<uchar> payload;
+	
+}

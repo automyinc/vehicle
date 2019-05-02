@@ -8,27 +8,104 @@
 
 #include <basic/package.hxx>
 #include <math/package.hxx>
+#include <vnx/package.hxx>
 
 
 namespace vehicle {
 
 
+class GPIO_PPS_ReceiverBase;
+class GPS_Info;
 class Odometry;
+class PPS_Signal;
+class UBX_Packet;
+class UbloxReceiverBase;
 
 } // namespace vehicle
 
 
 namespace vnx {
 
+void read(TypeInput& in, ::vehicle::GPIO_PPS_ReceiverBase& value, const TypeCode* type_code, const uint16_t* code); ///< \private
+void read(TypeInput& in, ::vehicle::GPS_Info& value, const TypeCode* type_code, const uint16_t* code); ///< \private
 void read(TypeInput& in, ::vehicle::Odometry& value, const TypeCode* type_code, const uint16_t* code); ///< \private
+void read(TypeInput& in, ::vehicle::PPS_Signal& value, const TypeCode* type_code, const uint16_t* code); ///< \private
+void read(TypeInput& in, ::vehicle::UBX_Packet& value, const TypeCode* type_code, const uint16_t* code); ///< \private
+void read(TypeInput& in, ::vehicle::UbloxReceiverBase& value, const TypeCode* type_code, const uint16_t* code); ///< \private
 
+void write(TypeOutput& out, const ::vehicle::GPIO_PPS_ReceiverBase& value, const TypeCode* type_code, const uint16_t* code); ///< \private
+void write(TypeOutput& out, const ::vehicle::GPS_Info& value, const TypeCode* type_code, const uint16_t* code); ///< \private
 void write(TypeOutput& out, const ::vehicle::Odometry& value, const TypeCode* type_code, const uint16_t* code); ///< \private
+void write(TypeOutput& out, const ::vehicle::PPS_Signal& value, const TypeCode* type_code, const uint16_t* code); ///< \private
+void write(TypeOutput& out, const ::vehicle::UBX_Packet& value, const TypeCode* type_code, const uint16_t* code); ///< \private
+void write(TypeOutput& out, const ::vehicle::UbloxReceiverBase& value, const TypeCode* type_code, const uint16_t* code); ///< \private
 
+void read(std::istream& in, ::vehicle::GPIO_PPS_ReceiverBase& value); ///< \private
+void read(std::istream& in, ::vehicle::GPS_Info& value); ///< \private
 void read(std::istream& in, ::vehicle::Odometry& value); ///< \private
+void read(std::istream& in, ::vehicle::PPS_Signal& value); ///< \private
+void read(std::istream& in, ::vehicle::UBX_Packet& value); ///< \private
+void read(std::istream& in, ::vehicle::UbloxReceiverBase& value); ///< \private
 
+void write(std::ostream& out, const ::vehicle::GPIO_PPS_ReceiverBase& value); ///< \private
+void write(std::ostream& out, const ::vehicle::GPS_Info& value); ///< \private
 void write(std::ostream& out, const ::vehicle::Odometry& value); ///< \private
+void write(std::ostream& out, const ::vehicle::PPS_Signal& value); ///< \private
+void write(std::ostream& out, const ::vehicle::UBX_Packet& value); ///< \private
+void write(std::ostream& out, const ::vehicle::UbloxReceiverBase& value); ///< \private
 
+void accept(Visitor& visitor, const ::vehicle::GPIO_PPS_ReceiverBase& value); ///< \private
+void accept(Visitor& visitor, const ::vehicle::GPS_Info& value); ///< \private
 void accept(Visitor& visitor, const ::vehicle::Odometry& value); ///< \private
+void accept(Visitor& visitor, const ::vehicle::PPS_Signal& value); ///< \private
+void accept(Visitor& visitor, const ::vehicle::UBX_Packet& value); ///< \private
+void accept(Visitor& visitor, const ::vehicle::UbloxReceiverBase& value); ///< \private
+
+/// \private
+template<>
+struct type<::vehicle::GPIO_PPS_ReceiverBase> {
+	void read(TypeInput& in, ::vehicle::GPIO_PPS_ReceiverBase& value, const TypeCode* type_code, const uint16_t* code) {
+		vnx::read(in, value, type_code, code);
+	}
+	void write(TypeOutput& out, const ::vehicle::GPIO_PPS_ReceiverBase& value, const TypeCode* type_code, const uint16_t* code) {
+		vnx::write(out, value, type_code, code);
+	}
+	void read(std::istream& in, ::vehicle::GPIO_PPS_ReceiverBase& value) {
+		vnx::read(in, value);
+	}
+	void write(std::ostream& out, const ::vehicle::GPIO_PPS_ReceiverBase& value) {
+		vnx::write(out, value);
+	}
+	void accept(Visitor& visitor, const ::vehicle::GPIO_PPS_ReceiverBase& value) {
+		vnx::accept(visitor, value);
+	}
+	void create_dynamic_code(std::vector<uint16_t>& code) {
+		code.push_back(CODE_ANY);
+	}
+};
+
+/// \private
+template<>
+struct type<::vehicle::GPS_Info> {
+	void read(TypeInput& in, ::vehicle::GPS_Info& value, const TypeCode* type_code, const uint16_t* code) {
+		vnx::read(in, value, type_code, code);
+	}
+	void write(TypeOutput& out, const ::vehicle::GPS_Info& value, const TypeCode* type_code, const uint16_t* code) {
+		vnx::write(out, value, type_code, code);
+	}
+	void read(std::istream& in, ::vehicle::GPS_Info& value) {
+		vnx::read(in, value);
+	}
+	void write(std::ostream& out, const ::vehicle::GPS_Info& value) {
+		vnx::write(out, value);
+	}
+	void accept(Visitor& visitor, const ::vehicle::GPS_Info& value) {
+		vnx::accept(visitor, value);
+	}
+	void create_dynamic_code(std::vector<uint16_t>& code) {
+		code.push_back(CODE_ANY);
+	}
+};
 
 /// \private
 template<>
@@ -46,6 +123,75 @@ struct type<::vehicle::Odometry> {
 		vnx::write(out, value);
 	}
 	void accept(Visitor& visitor, const ::vehicle::Odometry& value) {
+		vnx::accept(visitor, value);
+	}
+	void create_dynamic_code(std::vector<uint16_t>& code) {
+		code.push_back(CODE_ANY);
+	}
+};
+
+/// \private
+template<>
+struct type<::vehicle::PPS_Signal> {
+	void read(TypeInput& in, ::vehicle::PPS_Signal& value, const TypeCode* type_code, const uint16_t* code) {
+		vnx::read(in, value, type_code, code);
+	}
+	void write(TypeOutput& out, const ::vehicle::PPS_Signal& value, const TypeCode* type_code, const uint16_t* code) {
+		vnx::write(out, value, type_code, code);
+	}
+	void read(std::istream& in, ::vehicle::PPS_Signal& value) {
+		vnx::read(in, value);
+	}
+	void write(std::ostream& out, const ::vehicle::PPS_Signal& value) {
+		vnx::write(out, value);
+	}
+	void accept(Visitor& visitor, const ::vehicle::PPS_Signal& value) {
+		vnx::accept(visitor, value);
+	}
+	void create_dynamic_code(std::vector<uint16_t>& code) {
+		code.push_back(CODE_ANY);
+	}
+};
+
+/// \private
+template<>
+struct type<::vehicle::UBX_Packet> {
+	void read(TypeInput& in, ::vehicle::UBX_Packet& value, const TypeCode* type_code, const uint16_t* code) {
+		vnx::read(in, value, type_code, code);
+	}
+	void write(TypeOutput& out, const ::vehicle::UBX_Packet& value, const TypeCode* type_code, const uint16_t* code) {
+		vnx::write(out, value, type_code, code);
+	}
+	void read(std::istream& in, ::vehicle::UBX_Packet& value) {
+		vnx::read(in, value);
+	}
+	void write(std::ostream& out, const ::vehicle::UBX_Packet& value) {
+		vnx::write(out, value);
+	}
+	void accept(Visitor& visitor, const ::vehicle::UBX_Packet& value) {
+		vnx::accept(visitor, value);
+	}
+	void create_dynamic_code(std::vector<uint16_t>& code) {
+		code.push_back(CODE_ANY);
+	}
+};
+
+/// \private
+template<>
+struct type<::vehicle::UbloxReceiverBase> {
+	void read(TypeInput& in, ::vehicle::UbloxReceiverBase& value, const TypeCode* type_code, const uint16_t* code) {
+		vnx::read(in, value, type_code, code);
+	}
+	void write(TypeOutput& out, const ::vehicle::UbloxReceiverBase& value, const TypeCode* type_code, const uint16_t* code) {
+		vnx::write(out, value, type_code, code);
+	}
+	void read(std::istream& in, ::vehicle::UbloxReceiverBase& value) {
+		vnx::read(in, value);
+	}
+	void write(std::ostream& out, const ::vehicle::UbloxReceiverBase& value) {
+		vnx::write(out, value);
+	}
+	void accept(Visitor& visitor, const ::vehicle::UbloxReceiverBase& value) {
 		vnx::accept(visitor, value);
 	}
 	void create_dynamic_code(std::vector<uint16_t>& code) {

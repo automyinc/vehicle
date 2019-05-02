@@ -1,0 +1,9 @@
+package vehicle;
+
+class PPS_Signal {
+	
+	long time;		// rising edge time [usec]
+	
+	long jitter;
+	
+}

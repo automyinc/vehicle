@@ -5,7 +5,7 @@
  *      Author: mad
  */
 
-#include <vehicle/UbloxReceiver.h>
+#include <automy/vehicle/UbloxReceiver.h>
 
 #include <vnx/Publisher.h>
 
@@ -19,6 +19,7 @@
 #include <termios.h>
 
 
+namespace automy {
 namespace vehicle {
 
 UbloxReceiver::UbloxReceiver(const std::string& _vnx_name)
@@ -165,8 +166,8 @@ static void ubx_checksum(uint8_t byte, uint8_t crc[2]) {
 	crc[1] = crc[1] + crc[0];
 }
 
-void UbloxReceiver::read_loop(const int fd, std::shared_ptr<vnx::Topic> topic) {
-	vnx::Publisher publisher;
+void UbloxReceiver::read_loop(const int fd, std::shared_ptr<vnx::Topic> topic)
+{
 	enum {
 		SYNC_1, SYNC_2,
 		CLASS_ID, MSG_ID,
@@ -174,18 +175,22 @@ void UbloxReceiver::read_loop(const int fd, std::shared_ptr<vnx::Topic> topic) {
 		PAYLOAD,
 		CHECKSUM_1, CHECKSUM_2
 	} state = SYNC_1;
+	
+	vnx::Publisher publisher;
 	std::shared_ptr<UBX_Packet> packet;
 	uint32_t length = 0;
 	uint32_t index = 0;
 	uint8_t crc[2] = {};
 	uint8_t recv_crc[2] = {};
 	bool have_sync = false;
+	
 	while(true) {
 		uint8_t buf[1024];
 		const int num_bytes = ::read(fd, buf, sizeof(buf));
 		if(num_bytes <= 0) {
 			break;
 		}
+		
 		for(int i = 0; i < num_bytes; ++i) {
 			const uint8_t c = buf[i];
 			switch(state) {
@@ -261,3 +266,4 @@ void UbloxReceiver::read_loop(const int fd, std::shared_ptr<vnx::Topic> topic) {
 
 
 } // vehicle
+} // automy

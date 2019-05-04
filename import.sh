@@ -10,8 +10,8 @@ cp $SRC/interface/UBX_Packet.vni interface/
 cp $SRC/modules/UbloxReceiver.vni modules/
 cp $SRC/modules/GPIO_PPS_Receiver.vni modules/
 
-cp $SRC/include/vehicle/UbloxReceiver.h include/vehicle/
-cp $SRC/include/vehicle/GPIO_PPS_Receiver.h include/vehicle/
+cp $SRC/include/automy/vehicle/UbloxReceiver.h include/automy/vehicle/
+cp $SRC/include/automy/vehicle/GPIO_PPS_Receiver.h include/automy/vehicle/
 
 cp $SRC/src/UbloxReceiver.cpp src/
 cp $SRC/src/GPIO_PPS_Receiver.cpp src/

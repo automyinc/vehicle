@@ -1,4 +1,6 @@
-package vehicle;
+package automy.vehicle;
+
+import automy.math.Vector3d;
 
 class GPS_Info {
 	
@@ -24,6 +26,6 @@ class GPS_Info {
 	
 	int num_sats = -1;
 	
-	math.Vector3d antenna_pos;
+	Vector3d antenna_pos;
 	
 }

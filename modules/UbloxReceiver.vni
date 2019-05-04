@@ -1,4 +1,4 @@
-package vehicle;
+package automy.vehicle;
 
 module UbloxReceiver {
 	
@@ -10,7 +10,7 @@ module UbloxReceiver {
 	
 	int baudrate = 115200;
 	
-	math.Vector3d antenna_pos;					// relative to rear axle (x, y, z) [m]
+	automy.math.Vector3d antenna_pos;					// relative to rear axle (x, y, z) [m]
 	
 	void handle(UBX_Packet sample);
 	void handle(PPS_Signal sample);

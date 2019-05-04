@@ -1,4 +1,4 @@
-package vehicle;
+package automy.vehicle;
 
 module GPIO_PPS_Receiver {
 	

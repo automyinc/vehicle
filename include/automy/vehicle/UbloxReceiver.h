@@ -8,8 +8,8 @@
 #ifndef SENSORS_INCLUDE_SENSORS_UBLOXRECEIVER_H_
 #define SENSORS_INCLUDE_SENSORS_UBLOXRECEIVER_H_
 
-#include <vehicle/UbloxReceiverBase.hxx>
-#include <vehicle/GPS_Info.hxx>
+#include <automy/vehicle/UbloxReceiverBase.hxx>
+#include <automy/vehicle/GPS_Info.hxx>
 
 
 namespace ublox {
@@ -20,6 +20,7 @@ namespace ublox {
 } // ublox
 
 
+namespace automy {
 namespace vehicle {
 
 class UbloxReceiver : public UbloxReceiverBase {
@@ -60,5 +61,6 @@ private:
 
 
 } // vehicle
+} // automy
 
 #endif /* SENSORS_INCLUDE_SENSORS_UBLOXRECEIVER_H_ */

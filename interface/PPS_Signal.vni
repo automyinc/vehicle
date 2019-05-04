@@ -1,4 +1,4 @@
-package vehicle;
+package automy.vehicle;
 
 class PPS_Signal {
 	

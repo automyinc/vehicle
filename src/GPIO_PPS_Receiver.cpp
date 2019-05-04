@@ -5,8 +5,8 @@
  *      Author: mad
  */
 
-#include <vehicle/GPIO_PPS_Receiver.h>
-#include <vehicle/PPS_Signal.hxx>
+#include <automy/vehicle/GPIO_PPS_Receiver.h>
+#include <automy/vehicle/PPS_Signal.hxx>
 
 #include <vnx/Process.h>
 
@@ -15,6 +15,7 @@
 #include <unistd.h>
 
 
+namespace automy {
 namespace vehicle {
 
 GPIO_PPS_Receiver::GPIO_PPS_Receiver(const std::string& _vnx_name) : GPIO_PPS_ReceiverBase(_vnx_name) {}
@@ -63,3 +64,4 @@ void GPIO_PPS_Receiver::main() {
 
 
 } // vehicle
+} // automy

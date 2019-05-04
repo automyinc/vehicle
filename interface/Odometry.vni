@@ -1,8 +1,8 @@
-package vehicle;
+package automy.vehicle;
 
-import math.Vector3d;
+import automy.math.Vector3d;
 
-class Odometry extends basic.Transform3D {
+class Odometry extends automy.basic.Transform3D {
 	
 	Vector3d rotation;					// (roll, pitch, yaw) [rad]
 	Vector3d position;					// center rear axle (x, y, z) [m]

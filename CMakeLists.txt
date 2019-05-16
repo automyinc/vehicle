@@ -18,6 +18,9 @@ target_include_directories(automy_vehicle
 
 target_link_libraries(automy_vehicle automy_basic automy_math vnx_base)
 
+add_executable(example_ublox_receiver example/ublox_receiver.cpp)
+target_link_libraries(example_ublox_receiver automy_vehicle)
+
 install(DIRECTORY include/ DESTINATION include/automy)
 install(DIRECTORY generated/include/ DESTINATION include/automy)
 install(DIRECTORY interface/ DESTINATION interface/automy/vehicle)

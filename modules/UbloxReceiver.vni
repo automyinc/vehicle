@@ -4,7 +4,7 @@ module UbloxReceiver {
 	
 	vnx.TopicPtr output = "vehicle.gps_info";
 	vnx.TopicPtr topic_msgs = "vehicle.ubx_msgs";
-	vnx.TopicPtr input_pps = "vehicle.pps_signal";
+	vnx.TopicPtr input_pps;
 	
 	string port = "/dev/ttyACM0";
 	

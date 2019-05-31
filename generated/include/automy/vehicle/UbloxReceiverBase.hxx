@@ -20,7 +20,7 @@ public:
 	
 	::vnx::TopicPtr output = "vehicle.gps_info";
 	::vnx::TopicPtr topic_msgs = "vehicle.ubx_msgs";
-	::vnx::TopicPtr input_pps = "vehicle.pps_signal";
+	::vnx::TopicPtr input_pps;
 	::std::string port = "/dev/ttyACM0";
 	::int32_t baudrate = 115200;
 	::automy::math::Vector3d antenna_pos;

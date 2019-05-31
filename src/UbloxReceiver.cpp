@@ -41,10 +41,16 @@ void UbloxReceiver::main() {
 	
 	gps_info.antenna_pos = antenna_pos;
 	
-	Super::main();
+	try {
+		Super::main();
+	} catch(std::exception& ex) {
+		log(ERROR).out << ex.what();
+	}
 	
 	if(fd >= 0) {
 		::close(fd);
+	}
+	if(read_thread.joinable()) {
 		read_thread.join();
 	}
 }
@@ -155,7 +161,9 @@ void UbloxReceiver::check_packets() {
 				}
 			}
 		} else {
-			log(WARN).out << "Have no PPS, diff=" << diff/1000 << " ms";
+			if(input_pps) {
+				log(WARN).out << "Have no PPS, diff=" << diff/1000 << " ms";
+			}
 		}
 		publish(gps_info, output);
 	}

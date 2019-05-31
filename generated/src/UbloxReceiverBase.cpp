@@ -16,7 +16,7 @@ namespace vehicle {
 
 
 const vnx::Hash64 UbloxReceiverBase::VNX_TYPE_HASH(0x569529e56d14ec5bull);
-const vnx::Hash64 UbloxReceiverBase::VNX_CODE_HASH(0x8ffc4d6590086a4ull);
+const vnx::Hash64 UbloxReceiverBase::VNX_CODE_HASH(0x88e03adee15a2341ull);
 
 UbloxReceiverBase::UbloxReceiverBase(const std::string& _vnx_name)
 	:	Module::Module(_vnx_name)
@@ -133,7 +133,7 @@ std::shared_ptr<vnx::TypeCode> UbloxReceiverBase::create_type_code() {
 	std::shared_ptr<vnx::TypeCode> type_code = std::make_shared<vnx::TypeCode>(true);
 	type_code->name = "automy.vehicle.UbloxReceiver";
 	type_code->type_hash = vnx::Hash64(0x569529e56d14ec5bull);
-	type_code->code_hash = vnx::Hash64(0x8ffc4d6590086a4ull);
+	type_code->code_hash = vnx::Hash64(0x88e03adee15a2341ull);
 	type_code->methods.resize(2);
 	{
 		std::shared_ptr<vnx::TypeCode> call_type = std::make_shared<vnx::TypeCode>(true);
@@ -204,7 +204,6 @@ std::shared_ptr<vnx::TypeCode> UbloxReceiverBase::create_type_code() {
 		vnx::TypeField& field = type_code->fields[2];
 		field.is_extended = true;
 		field.name = "input_pps";
-		field.value = vnx::to_string("vehicle.pps_signal");
 		field.code = {12, 5};
 	}
 	{

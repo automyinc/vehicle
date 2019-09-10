@@ -17,10 +17,14 @@ namespace vehicle {
 
 class GPIO_PPS_ReceiverBase;
 class GPS_Info;
+class IMU_Info;
 class Odometry;
 class PPS_Signal;
 class UBX_Packet;
 class UbloxReceiverBase;
+class VehicleDimensions;
+class VehicleInfo;
+class WheelSpeed;
 
 } // namespace automy
 } // namespace vehicle
@@ -30,38 +34,58 @@ namespace vnx {
 
 void read(TypeInput& in, ::automy::vehicle::GPIO_PPS_ReceiverBase& value, const TypeCode* type_code, const uint16_t* code); ///< \private
 void read(TypeInput& in, ::automy::vehicle::GPS_Info& value, const TypeCode* type_code, const uint16_t* code); ///< \private
+void read(TypeInput& in, ::automy::vehicle::IMU_Info& value, const TypeCode* type_code, const uint16_t* code); ///< \private
 void read(TypeInput& in, ::automy::vehicle::Odometry& value, const TypeCode* type_code, const uint16_t* code); ///< \private
 void read(TypeInput& in, ::automy::vehicle::PPS_Signal& value, const TypeCode* type_code, const uint16_t* code); ///< \private
 void read(TypeInput& in, ::automy::vehicle::UBX_Packet& value, const TypeCode* type_code, const uint16_t* code); ///< \private
 void read(TypeInput& in, ::automy::vehicle::UbloxReceiverBase& value, const TypeCode* type_code, const uint16_t* code); ///< \private
+void read(TypeInput& in, ::automy::vehicle::VehicleDimensions& value, const TypeCode* type_code, const uint16_t* code); ///< \private
+void read(TypeInput& in, ::automy::vehicle::VehicleInfo& value, const TypeCode* type_code, const uint16_t* code); ///< \private
+void read(TypeInput& in, ::automy::vehicle::WheelSpeed& value, const TypeCode* type_code, const uint16_t* code); ///< \private
 
 void write(TypeOutput& out, const ::automy::vehicle::GPIO_PPS_ReceiverBase& value, const TypeCode* type_code, const uint16_t* code); ///< \private
 void write(TypeOutput& out, const ::automy::vehicle::GPS_Info& value, const TypeCode* type_code, const uint16_t* code); ///< \private
+void write(TypeOutput& out, const ::automy::vehicle::IMU_Info& value, const TypeCode* type_code, const uint16_t* code); ///< \private
 void write(TypeOutput& out, const ::automy::vehicle::Odometry& value, const TypeCode* type_code, const uint16_t* code); ///< \private
 void write(TypeOutput& out, const ::automy::vehicle::PPS_Signal& value, const TypeCode* type_code, const uint16_t* code); ///< \private
 void write(TypeOutput& out, const ::automy::vehicle::UBX_Packet& value, const TypeCode* type_code, const uint16_t* code); ///< \private
 void write(TypeOutput& out, const ::automy::vehicle::UbloxReceiverBase& value, const TypeCode* type_code, const uint16_t* code); ///< \private
+void write(TypeOutput& out, const ::automy::vehicle::VehicleDimensions& value, const TypeCode* type_code, const uint16_t* code); ///< \private
+void write(TypeOutput& out, const ::automy::vehicle::VehicleInfo& value, const TypeCode* type_code, const uint16_t* code); ///< \private
+void write(TypeOutput& out, const ::automy::vehicle::WheelSpeed& value, const TypeCode* type_code, const uint16_t* code); ///< \private
 
 void read(std::istream& in, ::automy::vehicle::GPIO_PPS_ReceiverBase& value); ///< \private
 void read(std::istream& in, ::automy::vehicle::GPS_Info& value); ///< \private
+void read(std::istream& in, ::automy::vehicle::IMU_Info& value); ///< \private
 void read(std::istream& in, ::automy::vehicle::Odometry& value); ///< \private
 void read(std::istream& in, ::automy::vehicle::PPS_Signal& value); ///< \private
 void read(std::istream& in, ::automy::vehicle::UBX_Packet& value); ///< \private
 void read(std::istream& in, ::automy::vehicle::UbloxReceiverBase& value); ///< \private
+void read(std::istream& in, ::automy::vehicle::VehicleDimensions& value); ///< \private
+void read(std::istream& in, ::automy::vehicle::VehicleInfo& value); ///< \private
+void read(std::istream& in, ::automy::vehicle::WheelSpeed& value); ///< \private
 
 void write(std::ostream& out, const ::automy::vehicle::GPIO_PPS_ReceiverBase& value); ///< \private
 void write(std::ostream& out, const ::automy::vehicle::GPS_Info& value); ///< \private
+void write(std::ostream& out, const ::automy::vehicle::IMU_Info& value); ///< \private
 void write(std::ostream& out, const ::automy::vehicle::Odometry& value); ///< \private
 void write(std::ostream& out, const ::automy::vehicle::PPS_Signal& value); ///< \private
 void write(std::ostream& out, const ::automy::vehicle::UBX_Packet& value); ///< \private
 void write(std::ostream& out, const ::automy::vehicle::UbloxReceiverBase& value); ///< \private
+void write(std::ostream& out, const ::automy::vehicle::VehicleDimensions& value); ///< \private
+void write(std::ostream& out, const ::automy::vehicle::VehicleInfo& value); ///< \private
+void write(std::ostream& out, const ::automy::vehicle::WheelSpeed& value); ///< \private
 
 void accept(Visitor& visitor, const ::automy::vehicle::GPIO_PPS_ReceiverBase& value); ///< \private
 void accept(Visitor& visitor, const ::automy::vehicle::GPS_Info& value); ///< \private
+void accept(Visitor& visitor, const ::automy::vehicle::IMU_Info& value); ///< \private
 void accept(Visitor& visitor, const ::automy::vehicle::Odometry& value); ///< \private
 void accept(Visitor& visitor, const ::automy::vehicle::PPS_Signal& value); ///< \private
 void accept(Visitor& visitor, const ::automy::vehicle::UBX_Packet& value); ///< \private
 void accept(Visitor& visitor, const ::automy::vehicle::UbloxReceiverBase& value); ///< \private
+void accept(Visitor& visitor, const ::automy::vehicle::VehicleDimensions& value); ///< \private
+void accept(Visitor& visitor, const ::automy::vehicle::VehicleInfo& value); ///< \private
+void accept(Visitor& visitor, const ::automy::vehicle::WheelSpeed& value); ///< \private
 
 /// \private
 template<>
@@ -102,6 +126,29 @@ struct type<::automy::vehicle::GPS_Info> {
 		vnx::write(out, value);
 	}
 	void accept(Visitor& visitor, const ::automy::vehicle::GPS_Info& value) {
+		vnx::accept(visitor, value);
+	}
+	void create_dynamic_code(std::vector<uint16_t>& code) {
+		code.push_back(CODE_ANY);
+	}
+};
+
+/// \private
+template<>
+struct type<::automy::vehicle::IMU_Info> {
+	void read(TypeInput& in, ::automy::vehicle::IMU_Info& value, const TypeCode* type_code, const uint16_t* code) {
+		vnx::read(in, value, type_code, code);
+	}
+	void write(TypeOutput& out, const ::automy::vehicle::IMU_Info& value, const TypeCode* type_code, const uint16_t* code) {
+		vnx::write(out, value, type_code, code);
+	}
+	void read(std::istream& in, ::automy::vehicle::IMU_Info& value) {
+		vnx::read(in, value);
+	}
+	void write(std::ostream& out, const ::automy::vehicle::IMU_Info& value) {
+		vnx::write(out, value);
+	}
+	void accept(Visitor& visitor, const ::automy::vehicle::IMU_Info& value) {
 		vnx::accept(visitor, value);
 	}
 	void create_dynamic_code(std::vector<uint16_t>& code) {
@@ -194,6 +241,75 @@ struct type<::automy::vehicle::UbloxReceiverBase> {
 		vnx::write(out, value);
 	}
 	void accept(Visitor& visitor, const ::automy::vehicle::UbloxReceiverBase& value) {
+		vnx::accept(visitor, value);
+	}
+	void create_dynamic_code(std::vector<uint16_t>& code) {
+		code.push_back(CODE_ANY);
+	}
+};
+
+/// \private
+template<>
+struct type<::automy::vehicle::VehicleDimensions> {
+	void read(TypeInput& in, ::automy::vehicle::VehicleDimensions& value, const TypeCode* type_code, const uint16_t* code) {
+		vnx::read(in, value, type_code, code);
+	}
+	void write(TypeOutput& out, const ::automy::vehicle::VehicleDimensions& value, const TypeCode* type_code, const uint16_t* code) {
+		vnx::write(out, value, type_code, code);
+	}
+	void read(std::istream& in, ::automy::vehicle::VehicleDimensions& value) {
+		vnx::read(in, value);
+	}
+	void write(std::ostream& out, const ::automy::vehicle::VehicleDimensions& value) {
+		vnx::write(out, value);
+	}
+	void accept(Visitor& visitor, const ::automy::vehicle::VehicleDimensions& value) {
+		vnx::accept(visitor, value);
+	}
+	void create_dynamic_code(std::vector<uint16_t>& code) {
+		code.push_back(CODE_ANY);
+	}
+};
+
+/// \private
+template<>
+struct type<::automy::vehicle::VehicleInfo> {
+	void read(TypeInput& in, ::automy::vehicle::VehicleInfo& value, const TypeCode* type_code, const uint16_t* code) {
+		vnx::read(in, value, type_code, code);
+	}
+	void write(TypeOutput& out, const ::automy::vehicle::VehicleInfo& value, const TypeCode* type_code, const uint16_t* code) {
+		vnx::write(out, value, type_code, code);
+	}
+	void read(std::istream& in, ::automy::vehicle::VehicleInfo& value) {
+		vnx::read(in, value);
+	}
+	void write(std::ostream& out, const ::automy::vehicle::VehicleInfo& value) {
+		vnx::write(out, value);
+	}
+	void accept(Visitor& visitor, const ::automy::vehicle::VehicleInfo& value) {
+		vnx::accept(visitor, value);
+	}
+	void create_dynamic_code(std::vector<uint16_t>& code) {
+		code.push_back(CODE_ANY);
+	}
+};
+
+/// \private
+template<>
+struct type<::automy::vehicle::WheelSpeed> {
+	void read(TypeInput& in, ::automy::vehicle::WheelSpeed& value, const TypeCode* type_code, const uint16_t* code) {
+		vnx::read(in, value, type_code, code);
+	}
+	void write(TypeOutput& out, const ::automy::vehicle::WheelSpeed& value, const TypeCode* type_code, const uint16_t* code) {
+		vnx::write(out, value, type_code, code);
+	}
+	void read(std::istream& in, ::automy::vehicle::WheelSpeed& value) {
+		vnx::read(in, value);
+	}
+	void write(std::ostream& out, const ::automy::vehicle::WheelSpeed& value) {
+		vnx::write(out, value);
+	}
+	void accept(Visitor& visitor, const ::automy::vehicle::WheelSpeed& value) {
 		vnx::accept(visitor, value);
 	}
 	void create_dynamic_code(std::vector<uint16_t>& code) {

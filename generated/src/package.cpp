@@ -5,10 +5,14 @@
 
 #include <automy/vehicle/GPIO_PPS_ReceiverBase.hxx>
 #include <automy/vehicle/GPS_Info.hxx>
+#include <automy/vehicle/IMU_Info.hxx>
 #include <automy/vehicle/Odometry.hxx>
 #include <automy/vehicle/PPS_Signal.hxx>
 #include <automy/vehicle/UBX_Packet.hxx>
 #include <automy/vehicle/UbloxReceiverBase.hxx>
+#include <automy/vehicle/VehicleDimensions.hxx>
+#include <automy/vehicle/VehicleInfo.hxx>
+#include <automy/vehicle/WheelSpeed.hxx>
 
 
 
@@ -19,10 +23,14 @@ namespace vehicle {
 static void register_all_types() {
 	vnx::register_type_code(automy::vehicle::GPIO_PPS_ReceiverBase::create_type_code());
 	vnx::register_type_code(automy::vehicle::GPS_Info::create_type_code());
+	vnx::register_type_code(automy::vehicle::IMU_Info::create_type_code());
 	vnx::register_type_code(automy::vehicle::Odometry::create_type_code());
 	vnx::register_type_code(automy::vehicle::PPS_Signal::create_type_code());
 	vnx::register_type_code(automy::vehicle::UBX_Packet::create_type_code());
 	vnx::register_type_code(automy::vehicle::UbloxReceiverBase::create_type_code());
+	vnx::register_type_code(automy::vehicle::VehicleDimensions::create_type_code());
+	vnx::register_type_code(automy::vehicle::VehicleInfo::create_type_code());
+	vnx::register_type_code(automy::vehicle::WheelSpeed::create_type_code());
 }
 
 static struct vnx_static_init {

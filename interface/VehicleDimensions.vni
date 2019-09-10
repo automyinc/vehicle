@@ -1,0 +1,14 @@
+package automy.vehicle;
+
+class VehicleDimensions {
+	
+	float width;				// [m]
+	float length;				// [m]
+	float height;				// [m]
+	float wheelbase;			// [m]
+	float ground_offset;		// axle to ground (negative) [m]
+	
+	float pos_x;				// rear axle to front bumper (positive) [m]
+	float neg_x;				// rear axle to back bumper (negative) [m]
+	
+}

@@ -1,0 +1,12 @@
+package automy.vehicle;
+
+class WheelSpeed {
+	
+	long time;
+	
+	float front_left;				// [m/s]
+	float front_right;				// [m/s]
+	float rear_left;				// [m/s]
+	float rear_right;				// [m/s]
+	
+}

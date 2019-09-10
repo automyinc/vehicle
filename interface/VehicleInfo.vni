@@ -1,0 +1,17 @@
+package automy.vehicle;
+
+class VehicleInfo {
+	
+	long time;
+	
+	double speed;						// [m/s]
+	
+	double steering_wheel_angle;		// [rad]
+	
+	double steering_wheel_velocity;		// [rad/s]
+	
+	VehicleDimensions dimensions;
+	
+	float steering_ratio;
+	
+}

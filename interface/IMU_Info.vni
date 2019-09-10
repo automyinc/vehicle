@@ -1,0 +1,15 @@
+package automy.vehicle;
+
+import automy.math.Vector3f;
+
+class IMU_Info {
+	
+	long time;
+	
+	Vector3f gyro_rates;			// (roll, pitch, yaw) [rad/s]
+	
+	Vector3f acceleration;			// (x, y, z) [m/s^2]
+	
+	float temperature;				// [C]
+	
+}

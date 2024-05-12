@@ -8,7 +8,7 @@
 #include <automy/vehicle/UbloxReceiver.h>
 #include <automy/vehicle/GPS_Info.hxx>
 
-#include <vnx/Config.h>
+#include <vnx/Config.hpp>
 #include <vnx/Process.h>
 #include <vnx/Thread.h>
 

@@ -6,13 +6,13 @@
 
 #include <automy/vehicle/package.hxx>
 #include <automy/basic/Transform3D.hxx>
-#include <automy/math/Vector3d.h>
+#include <automy/math/Vector3d.hpp>
 
 
 namespace automy {
 namespace vehicle {
 
-class Odometry : public ::automy::basic::Transform3D {
+class AUTOMY_VEHICLE_EXPORT Odometry : public ::automy::basic::Transform3D {
 public:
 	
 	::automy::math::Vector3d rotation;
@@ -21,42 +21,80 @@ public:
 	::automy::math::Vector3d angular_velocity;
 	::automy::math::Vector3d acceleration;
 	::automy::math::Vector3d sensor_gyro_bias;
-	::vnx::float64_t speed_factor = 1;
-	::vnx::bool_t is_timeout = 0;
-	::std::map<::int32_t, ::automy::math::Vector3d> sensor_gyro_bias_map;
+	vnx::float64_t speed_factor = 1;
+	vnx::bool_t is_timeout = 0;
+	std::map<int32_t, ::automy::math::Vector3d> sensor_gyro_bias_map;
 	
 	typedef ::automy::basic::Transform3D Super;
 	
 	static const vnx::Hash64 VNX_TYPE_HASH;
 	static const vnx::Hash64 VNX_CODE_HASH;
 	
-	vnx::Hash64 get_type_hash() const;
-	const char* get_type_name() const;
+	static constexpr uint64_t VNX_TYPE_ID = 0x543083a351666ea6ull;
+	
+	Odometry() {}
+	
+	vnx::Hash64 get_type_hash() const override;
+	std::string get_type_name() const override;
+	const vnx::TypeCode* get_type_code() const override;
 	
 	static std::shared_ptr<Odometry> create();
-	std::shared_ptr<vnx::Value> clone() const;
+	std::shared_ptr<vnx::Value> clone() const override;
 	
-	void read(vnx::TypeInput& _in, const vnx::TypeCode* _type_code, const uint16_t* _code);
-	void write(vnx::TypeOutput& _out, const vnx::TypeCode* _type_code, const uint16_t* _code) const;
+	void read(vnx::TypeInput& _in, const vnx::TypeCode* _type_code, const uint16_t* _code) override;
+	void write(vnx::TypeOutput& _out, const vnx::TypeCode* _type_code, const uint16_t* _code) const override;
 	
-	void read(std::istream& _in);
-	void write(std::ostream& _out) const;
+	void read(std::istream& _in) override;
+	void write(std::ostream& _out) const override;
 	
-	void accept(vnx::Visitor& _visitor) const;
+	template<typename T>
+	void accept_generic(T& _visitor) const;
+	void accept(vnx::Visitor& _visitor) const override;
 	
-	vnx::Object to_object() const;
-	void from_object(const vnx::Object& object);
+	vnx::Object to_object() const override;
+	void from_object(const vnx::Object& object) override;
+	
+	vnx::Variant get_field(const std::string& name) const override;
+	void set_field(const std::string& name, const vnx::Variant& value) override;
 	
 	friend std::ostream& operator<<(std::ostream& _out, const Odometry& _value);
 	friend std::istream& operator>>(std::istream& _in, Odometry& _value);
 	
-	static const vnx::TypeCode* get_type_code();
-	static std::shared_ptr<vnx::TypeCode> create_type_code();
+	static const vnx::TypeCode* static_get_type_code();
+	static std::shared_ptr<vnx::TypeCode> static_create_type_code();
+	
+protected:
+	std::shared_ptr<vnx::Value> vnx_call_switch(std::shared_ptr<const vnx::Value> _method) override;
 	
 };
+
+template<typename T>
+void Odometry::accept_generic(T& _visitor) const {
+	_visitor.template type_begin<Odometry>(14);
+	_visitor.type_field("time", 0); _visitor.accept(time);
+	_visitor.type_field("time_offset", 1); _visitor.accept(time_offset);
+	_visitor.type_field("frame", 2); _visitor.accept(frame);
+	_visitor.type_field("parent", 3); _visitor.accept(parent);
+	_visitor.type_field("matrix", 4); _visitor.accept(matrix);
+	_visitor.type_field("rotation", 5); _visitor.accept(rotation);
+	_visitor.type_field("position", 6); _visitor.accept(position);
+	_visitor.type_field("velocity", 7); _visitor.accept(velocity);
+	_visitor.type_field("angular_velocity", 8); _visitor.accept(angular_velocity);
+	_visitor.type_field("acceleration", 9); _visitor.accept(acceleration);
+	_visitor.type_field("sensor_gyro_bias", 10); _visitor.accept(sensor_gyro_bias);
+	_visitor.type_field("speed_factor", 11); _visitor.accept(speed_factor);
+	_visitor.type_field("is_timeout", 12); _visitor.accept(is_timeout);
+	_visitor.type_field("sensor_gyro_bias_map", 13); _visitor.accept(sensor_gyro_bias_map);
+	_visitor.template type_end<Odometry>(14);
+}
 
 
 } // namespace automy
 } // namespace vehicle
+
+
+namespace vnx {
+
+} // vnx
 
 #endif // INCLUDE_automy_vehicle_Odometry_HXX_

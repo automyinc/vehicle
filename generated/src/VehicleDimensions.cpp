@@ -3,11 +3,9 @@
 
 #include <automy/vehicle/package.hxx>
 #include <automy/vehicle/VehicleDimensions.hxx>
-#include <vnx/Input.h>
-#include <vnx/Output.h>
-#include <vnx/Visitor.h>
-#include <vnx/Object.h>
-#include <vnx/Struct.h>
+#include <vnx/Value.h>
+
+#include <vnx/vnx.h>
 
 
 namespace automy {
@@ -21,8 +19,12 @@ vnx::Hash64 VehicleDimensions::get_type_hash() const {
 	return VNX_TYPE_HASH;
 }
 
-const char* VehicleDimensions::get_type_name() const {
+std::string VehicleDimensions::get_type_name() const {
 	return "automy.vehicle.VehicleDimensions";
+}
+
+const vnx::TypeCode* VehicleDimensions::get_type_code() const {
+	return automy::vehicle::vnx_native_type_code_VehicleDimensions;
 }
 
 std::shared_ptr<VehicleDimensions> VehicleDimensions::create() {
@@ -42,7 +44,7 @@ void VehicleDimensions::write(vnx::TypeOutput& _out, const vnx::TypeCode* _type_
 }
 
 void VehicleDimensions::accept(vnx::Visitor& _visitor) const {
-	const vnx::TypeCode* _type_code = get_type_code();
+	const vnx::TypeCode* _type_code = automy::vehicle::vnx_native_type_code_VehicleDimensions;
 	_visitor.type_begin(*_type_code);
 	_visitor.type_field(_type_code->fields[0], 0); vnx::accept(_visitor, width);
 	_visitor.type_field(_type_code->fields[1], 1); vnx::accept(_visitor, length);
@@ -55,8 +57,8 @@ void VehicleDimensions::accept(vnx::Visitor& _visitor) const {
 }
 
 void VehicleDimensions::write(std::ostream& _out) const {
-	_out << "{";
-	_out << "\"width\": "; vnx::write(_out, width);
+	_out << "{\"__type\": \"automy.vehicle.VehicleDimensions\"";
+	_out << ", \"width\": "; vnx::write(_out, width);
 	_out << ", \"length\": "; vnx::write(_out, length);
 	_out << ", \"height\": "; vnx::write(_out, height);
 	_out << ", \"wheelbase\": "; vnx::write(_out, wheelbase);
@@ -67,29 +69,14 @@ void VehicleDimensions::write(std::ostream& _out) const {
 }
 
 void VehicleDimensions::read(std::istream& _in) {
-	std::map<std::string, std::string> _object;
-	vnx::read_object(_in, _object);
-	for(const auto& _entry : _object) {
-		if(_entry.first == "ground_offset") {
-			vnx::from_string(_entry.second, ground_offset);
-		} else if(_entry.first == "height") {
-			vnx::from_string(_entry.second, height);
-		} else if(_entry.first == "length") {
-			vnx::from_string(_entry.second, length);
-		} else if(_entry.first == "neg_x") {
-			vnx::from_string(_entry.second, neg_x);
-		} else if(_entry.first == "pos_x") {
-			vnx::from_string(_entry.second, pos_x);
-		} else if(_entry.first == "wheelbase") {
-			vnx::from_string(_entry.second, wheelbase);
-		} else if(_entry.first == "width") {
-			vnx::from_string(_entry.second, width);
-		}
+	if(auto _json = vnx::read_json(_in)) {
+		from_object(_json->to_object());
 	}
 }
 
 vnx::Object VehicleDimensions::to_object() const {
 	vnx::Object _object;
+	_object["__type"] = "automy.vehicle.VehicleDimensions";
 	_object["width"] = width;
 	_object["length"] = length;
 	_object["height"] = height;
@@ -120,6 +107,49 @@ void VehicleDimensions::from_object(const vnx::Object& _object) {
 	}
 }
 
+vnx::Variant VehicleDimensions::get_field(const std::string& _name) const {
+	if(_name == "width") {
+		return vnx::Variant(width);
+	}
+	if(_name == "length") {
+		return vnx::Variant(length);
+	}
+	if(_name == "height") {
+		return vnx::Variant(height);
+	}
+	if(_name == "wheelbase") {
+		return vnx::Variant(wheelbase);
+	}
+	if(_name == "ground_offset") {
+		return vnx::Variant(ground_offset);
+	}
+	if(_name == "pos_x") {
+		return vnx::Variant(pos_x);
+	}
+	if(_name == "neg_x") {
+		return vnx::Variant(neg_x);
+	}
+	return vnx::Variant();
+}
+
+void VehicleDimensions::set_field(const std::string& _name, const vnx::Variant& _value) {
+	if(_name == "width") {
+		_value.to(width);
+	} else if(_name == "length") {
+		_value.to(length);
+	} else if(_name == "height") {
+		_value.to(height);
+	} else if(_name == "wheelbase") {
+		_value.to(wheelbase);
+	} else if(_name == "ground_offset") {
+		_value.to(ground_offset);
+	} else if(_name == "pos_x") {
+		_value.to(pos_x);
+	} else if(_name == "neg_x") {
+		_value.to(neg_x);
+	}
+}
+
 /// \private
 std::ostream& operator<<(std::ostream& _out, const VehicleDimensions& _value) {
 	_value.write(_out);
@@ -132,59 +162,74 @@ std::istream& operator>>(std::istream& _in, VehicleDimensions& _value) {
 	return _in;
 }
 
-const vnx::TypeCode* VehicleDimensions::get_type_code() {
-	const vnx::TypeCode* type_code = vnx::get_type_code(vnx::Hash64(0xf92e12e0b29c383full));
+const vnx::TypeCode* VehicleDimensions::static_get_type_code() {
+	const vnx::TypeCode* type_code = vnx::get_type_code(VNX_TYPE_HASH);
 	if(!type_code) {
-		type_code = vnx::register_type_code(create_type_code());
+		type_code = vnx::register_type_code(static_create_type_code());
 	}
 	return type_code;
 }
 
-std::shared_ptr<vnx::TypeCode> VehicleDimensions::create_type_code() {
-	std::shared_ptr<vnx::TypeCode> type_code = std::make_shared<vnx::TypeCode>(true);
+std::shared_ptr<vnx::TypeCode> VehicleDimensions::static_create_type_code() {
+	auto type_code = std::make_shared<vnx::TypeCode>();
 	type_code->name = "automy.vehicle.VehicleDimensions";
 	type_code->type_hash = vnx::Hash64(0xf92e12e0b29c383full);
 	type_code->code_hash = vnx::Hash64(0xa0557a2f1e765539ull);
+	type_code->is_native = true;
 	type_code->is_class = true;
+	type_code->native_size = sizeof(::automy::vehicle::VehicleDimensions);
 	type_code->create_value = []() -> std::shared_ptr<vnx::Value> { return std::make_shared<VehicleDimensions>(); };
 	type_code->fields.resize(7);
 	{
-		vnx::TypeField& field = type_code->fields[0];
+		auto& field = type_code->fields[0];
+		field.data_size = 4;
 		field.name = "width";
 		field.code = {9};
 	}
 	{
-		vnx::TypeField& field = type_code->fields[1];
+		auto& field = type_code->fields[1];
+		field.data_size = 4;
 		field.name = "length";
 		field.code = {9};
 	}
 	{
-		vnx::TypeField& field = type_code->fields[2];
+		auto& field = type_code->fields[2];
+		field.data_size = 4;
 		field.name = "height";
 		field.code = {9};
 	}
 	{
-		vnx::TypeField& field = type_code->fields[3];
+		auto& field = type_code->fields[3];
+		field.data_size = 4;
 		field.name = "wheelbase";
 		field.code = {9};
 	}
 	{
-		vnx::TypeField& field = type_code->fields[4];
+		auto& field = type_code->fields[4];
+		field.data_size = 4;
 		field.name = "ground_offset";
 		field.code = {9};
 	}
 	{
-		vnx::TypeField& field = type_code->fields[5];
+		auto& field = type_code->fields[5];
+		field.data_size = 4;
 		field.name = "pos_x";
 		field.code = {9};
 	}
 	{
-		vnx::TypeField& field = type_code->fields[6];
+		auto& field = type_code->fields[6];
+		field.data_size = 4;
 		field.name = "neg_x";
 		field.code = {9};
 	}
 	type_code->build();
 	return type_code;
+}
+
+std::shared_ptr<vnx::Value> VehicleDimensions::vnx_call_switch(std::shared_ptr<const vnx::Value> _method) {
+	switch(_method->get_type_hash()) {
+	}
+	return nullptr;
 }
 
 
@@ -195,62 +240,60 @@ std::shared_ptr<vnx::TypeCode> VehicleDimensions::create_type_code() {
 namespace vnx {
 
 void read(TypeInput& in, ::automy::vehicle::VehicleDimensions& value, const TypeCode* type_code, const uint16_t* code) {
+	if(code) {
+		switch(code[0]) {
+			case CODE_OBJECT:
+			case CODE_ALT_OBJECT: {
+				Object tmp;
+				vnx::read(in, tmp, type_code, code);
+				value.from_object(tmp);
+				return;
+			}
+			case CODE_DYNAMIC:
+			case CODE_ALT_DYNAMIC:
+				vnx::read_dynamic(in, value);
+				return;
+		}
+	}
 	if(!type_code) {
-		throw std::logic_error("read(): type_code == 0");
+		vnx::skip(in, type_code, code);
+		return;
 	}
 	if(code) {
 		switch(code[0]) {
 			case CODE_STRUCT: type_code = type_code->depends[code[1]]; break;
 			case CODE_ALT_STRUCT: type_code = type_code->depends[vnx::flip_bytes(code[1])]; break;
-			default: vnx::skip(in, type_code, code); return;
+			default: {
+				vnx::skip(in, type_code, code);
+				return;
+			}
 		}
 	}
-	const char* const _buf = in.read(type_code->total_field_size);
+	const auto* const _buf = in.read(type_code->total_field_size);
 	if(type_code->is_matched) {
-		{
-			const vnx::TypeField* const _field = type_code->field_map[0];
-			if(_field) {
-				vnx::read_value(_buf + _field->offset, value.width, _field->code.data());
-			}
+		if(const auto* const _field = type_code->field_map[0]) {
+			vnx::read_value(_buf + _field->offset, value.width, _field->code.data());
 		}
-		{
-			const vnx::TypeField* const _field = type_code->field_map[1];
-			if(_field) {
-				vnx::read_value(_buf + _field->offset, value.length, _field->code.data());
-			}
+		if(const auto* const _field = type_code->field_map[1]) {
+			vnx::read_value(_buf + _field->offset, value.length, _field->code.data());
 		}
-		{
-			const vnx::TypeField* const _field = type_code->field_map[2];
-			if(_field) {
-				vnx::read_value(_buf + _field->offset, value.height, _field->code.data());
-			}
+		if(const auto* const _field = type_code->field_map[2]) {
+			vnx::read_value(_buf + _field->offset, value.height, _field->code.data());
 		}
-		{
-			const vnx::TypeField* const _field = type_code->field_map[3];
-			if(_field) {
-				vnx::read_value(_buf + _field->offset, value.wheelbase, _field->code.data());
-			}
+		if(const auto* const _field = type_code->field_map[3]) {
+			vnx::read_value(_buf + _field->offset, value.wheelbase, _field->code.data());
 		}
-		{
-			const vnx::TypeField* const _field = type_code->field_map[4];
-			if(_field) {
-				vnx::read_value(_buf + _field->offset, value.ground_offset, _field->code.data());
-			}
+		if(const auto* const _field = type_code->field_map[4]) {
+			vnx::read_value(_buf + _field->offset, value.ground_offset, _field->code.data());
 		}
-		{
-			const vnx::TypeField* const _field = type_code->field_map[5];
-			if(_field) {
-				vnx::read_value(_buf + _field->offset, value.pos_x, _field->code.data());
-			}
+		if(const auto* const _field = type_code->field_map[5]) {
+			vnx::read_value(_buf + _field->offset, value.pos_x, _field->code.data());
 		}
-		{
-			const vnx::TypeField* const _field = type_code->field_map[6];
-			if(_field) {
-				vnx::read_value(_buf + _field->offset, value.neg_x, _field->code.data());
-			}
+		if(const auto* const _field = type_code->field_map[6]) {
+			vnx::read_value(_buf + _field->offset, value.neg_x, _field->code.data());
 		}
 	}
-	for(const vnx::TypeField* _field : type_code->ext_fields) {
+	for(const auto* _field : type_code->ext_fields) {
 		switch(_field->native_index) {
 			default: vnx::skip(in, type_code, _field->code.data());
 		}
@@ -258,14 +301,19 @@ void read(TypeInput& in, ::automy::vehicle::VehicleDimensions& value, const Type
 }
 
 void write(TypeOutput& out, const ::automy::vehicle::VehicleDimensions& value, const TypeCode* type_code, const uint16_t* code) {
+	if(code && code[0] == CODE_OBJECT) {
+		vnx::write(out, value.to_object(), nullptr, code);
+		return;
+	}
 	if(!type_code || (code && code[0] == CODE_ANY)) {
-		type_code = vnx::write_type_code<::automy::vehicle::VehicleDimensions>(out);
+		type_code = automy::vehicle::vnx_native_type_code_VehicleDimensions;
+		out.write_type_code(type_code);
 		vnx::write_class_header<::automy::vehicle::VehicleDimensions>(out);
 	}
-	if(code && code[0] == CODE_STRUCT) {
+	else if(code && code[0] == CODE_STRUCT) {
 		type_code = type_code->depends[code[1]];
 	}
-	char* const _buf = out.write(28);
+	auto* const _buf = out.write(28);
 	vnx::write_value(_buf + 0, value.width);
 	vnx::write_value(_buf + 4, value.length);
 	vnx::write_value(_buf + 8, value.height);

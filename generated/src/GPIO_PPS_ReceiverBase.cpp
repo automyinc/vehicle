@@ -3,12 +3,29 @@
 
 #include <automy/vehicle/package.hxx>
 #include <automy/vehicle/GPIO_PPS_ReceiverBase.hxx>
-#include <vnx/Input.h>
-#include <vnx/Output.h>
-#include <vnx/Visitor.h>
-#include <vnx/Object.h>
-#include <vnx/Struct.h>
-#include <vnx/Config.h>
+#include <vnx/NoSuchMethod.hxx>
+#include <vnx/Module.h>
+#include <vnx/ModuleInterface_vnx_get_config.hxx>
+#include <vnx/ModuleInterface_vnx_get_config_return.hxx>
+#include <vnx/ModuleInterface_vnx_get_config_object.hxx>
+#include <vnx/ModuleInterface_vnx_get_config_object_return.hxx>
+#include <vnx/ModuleInterface_vnx_get_module_info.hxx>
+#include <vnx/ModuleInterface_vnx_get_module_info_return.hxx>
+#include <vnx/ModuleInterface_vnx_get_type_code.hxx>
+#include <vnx/ModuleInterface_vnx_get_type_code_return.hxx>
+#include <vnx/ModuleInterface_vnx_restart.hxx>
+#include <vnx/ModuleInterface_vnx_restart_return.hxx>
+#include <vnx/ModuleInterface_vnx_self_test.hxx>
+#include <vnx/ModuleInterface_vnx_self_test_return.hxx>
+#include <vnx/ModuleInterface_vnx_set_config.hxx>
+#include <vnx/ModuleInterface_vnx_set_config_return.hxx>
+#include <vnx/ModuleInterface_vnx_set_config_object.hxx>
+#include <vnx/ModuleInterface_vnx_set_config_object_return.hxx>
+#include <vnx/ModuleInterface_vnx_stop.hxx>
+#include <vnx/ModuleInterface_vnx_stop_return.hxx>
+#include <vnx/TopicPtr.hpp>
+
+#include <vnx/vnx.h>
 
 
 namespace automy {
@@ -21,20 +38,24 @@ const vnx::Hash64 GPIO_PPS_ReceiverBase::VNX_CODE_HASH(0x4ff8ab1be354e836ull);
 GPIO_PPS_ReceiverBase::GPIO_PPS_ReceiverBase(const std::string& _vnx_name)
 	:	Module::Module(_vnx_name)
 {
-	vnx::read_config(vnx_name + ".device", device);
 	vnx::read_config(vnx_name + ".output", output);
+	vnx::read_config(vnx_name + ".device", device);
 }
 
 vnx::Hash64 GPIO_PPS_ReceiverBase::get_type_hash() const {
 	return VNX_TYPE_HASH;
 }
 
-const char* GPIO_PPS_ReceiverBase::get_type_name() const {
+std::string GPIO_PPS_ReceiverBase::get_type_name() const {
 	return "automy.vehicle.GPIO_PPS_Receiver";
 }
 
+const vnx::TypeCode* GPIO_PPS_ReceiverBase::get_type_code() const {
+	return automy::vehicle::vnx_native_type_code_GPIO_PPS_ReceiverBase;
+}
+
 void GPIO_PPS_ReceiverBase::accept(vnx::Visitor& _visitor) const {
-	const vnx::TypeCode* _type_code = get_type_code();
+	const vnx::TypeCode* _type_code = automy::vehicle::vnx_native_type_code_GPIO_PPS_ReceiverBase;
 	_visitor.type_begin(*_type_code);
 	_visitor.type_field(_type_code->fields[0], 0); vnx::accept(_visitor, output);
 	_visitor.type_field(_type_code->fields[1], 1); vnx::accept(_visitor, device);
@@ -49,19 +70,14 @@ void GPIO_PPS_ReceiverBase::write(std::ostream& _out) const {
 }
 
 void GPIO_PPS_ReceiverBase::read(std::istream& _in) {
-	std::map<std::string, std::string> _object;
-	vnx::read_object(_in, _object);
-	for(const auto& _entry : _object) {
-		if(_entry.first == "device") {
-			vnx::from_string(_entry.second, device);
-		} else if(_entry.first == "output") {
-			vnx::from_string(_entry.second, output);
-		}
+	if(auto _json = vnx::read_json(_in)) {
+		from_object(_json->to_object());
 	}
 }
 
 vnx::Object GPIO_PPS_ReceiverBase::to_object() const {
 	vnx::Object _object;
+	_object["__type"] = "automy.vehicle.GPIO_PPS_Receiver";
 	_object["output"] = output;
 	_object["device"] = device;
 	return _object;
@@ -77,6 +93,24 @@ void GPIO_PPS_ReceiverBase::from_object(const vnx::Object& _object) {
 	}
 }
 
+vnx::Variant GPIO_PPS_ReceiverBase::get_field(const std::string& _name) const {
+	if(_name == "output") {
+		return vnx::Variant(output);
+	}
+	if(_name == "device") {
+		return vnx::Variant(device);
+	}
+	return vnx::Variant();
+}
+
+void GPIO_PPS_ReceiverBase::set_field(const std::string& _name, const vnx::Variant& _value) {
+	if(_name == "output") {
+		_value.to(output);
+	} else if(_name == "device") {
+		_value.to(device);
+	}
+}
+
 /// \private
 std::ostream& operator<<(std::ostream& _out, const GPIO_PPS_ReceiverBase& _value) {
 	_value.write(_out);
@@ -89,44 +123,121 @@ std::istream& operator>>(std::istream& _in, GPIO_PPS_ReceiverBase& _value) {
 	return _in;
 }
 
-const vnx::TypeCode* GPIO_PPS_ReceiverBase::get_type_code() {
-	const vnx::TypeCode* type_code = vnx::get_type_code(vnx::Hash64(0x892a6a792097fbd7ull));
+const vnx::TypeCode* GPIO_PPS_ReceiverBase::static_get_type_code() {
+	const vnx::TypeCode* type_code = vnx::get_type_code(VNX_TYPE_HASH);
 	if(!type_code) {
-		type_code = vnx::register_type_code(create_type_code());
+		type_code = vnx::register_type_code(static_create_type_code());
 	}
 	return type_code;
 }
 
-std::shared_ptr<vnx::TypeCode> GPIO_PPS_ReceiverBase::create_type_code() {
-	std::shared_ptr<vnx::TypeCode> type_code = std::make_shared<vnx::TypeCode>(true);
+std::shared_ptr<vnx::TypeCode> GPIO_PPS_ReceiverBase::static_create_type_code() {
+	auto type_code = std::make_shared<vnx::TypeCode>();
 	type_code->name = "automy.vehicle.GPIO_PPS_Receiver";
 	type_code->type_hash = vnx::Hash64(0x892a6a792097fbd7ull);
 	type_code->code_hash = vnx::Hash64(0x4ff8ab1be354e836ull);
-	type_code->methods.resize(0);
+	type_code->is_native = true;
+	type_code->native_size = sizeof(::automy::vehicle::GPIO_PPS_ReceiverBase);
+	type_code->methods.resize(9);
+	type_code->methods[0] = ::vnx::ModuleInterface_vnx_get_config::static_get_type_code();
+	type_code->methods[1] = ::vnx::ModuleInterface_vnx_get_config_object::static_get_type_code();
+	type_code->methods[2] = ::vnx::ModuleInterface_vnx_get_module_info::static_get_type_code();
+	type_code->methods[3] = ::vnx::ModuleInterface_vnx_get_type_code::static_get_type_code();
+	type_code->methods[4] = ::vnx::ModuleInterface_vnx_restart::static_get_type_code();
+	type_code->methods[5] = ::vnx::ModuleInterface_vnx_self_test::static_get_type_code();
+	type_code->methods[6] = ::vnx::ModuleInterface_vnx_set_config::static_get_type_code();
+	type_code->methods[7] = ::vnx::ModuleInterface_vnx_set_config_object::static_get_type_code();
+	type_code->methods[8] = ::vnx::ModuleInterface_vnx_stop::static_get_type_code();
 	type_code->fields.resize(2);
 	{
-		vnx::TypeField& field = type_code->fields[0];
+		auto& field = type_code->fields[0];
 		field.is_extended = true;
 		field.name = "output";
 		field.value = vnx::to_string("vehicle.pps_signal");
 		field.code = {12, 5};
 	}
 	{
-		vnx::TypeField& field = type_code->fields[1];
+		auto& field = type_code->fields[1];
 		field.is_extended = true;
 		field.name = "device";
-		field.code = {12, 5};
+		field.code = {32};
 	}
 	type_code->build();
 	return type_code;
 }
 
-void GPIO_PPS_ReceiverBase::handle_switch(std::shared_ptr<const ::vnx::Sample> _sample) {
-	const uint64_t _type_hash = _sample->value->get_type_hash();
+void GPIO_PPS_ReceiverBase::vnx_handle_switch(std::shared_ptr<const vnx::Value> _value) {
+	const auto* _type_code = _value->get_type_code();
+	while(_type_code) {
+		switch(_type_code->type_hash) {
+			default:
+				_type_code = _type_code->super;
+		}
+	}
+	handle(std::static_pointer_cast<const vnx::Value>(_value));
 }
 
-bool GPIO_PPS_ReceiverBase::call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const vnx::TypeCode* _call_type, const vnx::TypeCode* _return_type) {
-	return false;
+std::shared_ptr<vnx::Value> GPIO_PPS_ReceiverBase::vnx_call_switch(std::shared_ptr<const vnx::Value> _method, const vnx::request_id_t& _request_id) {
+	switch(_method->get_type_hash()) {
+		case 0xbbc7f1a01044d294ull: {
+			auto _args = std::static_pointer_cast<const ::vnx::ModuleInterface_vnx_get_config>(_method);
+			auto _return_value = ::vnx::ModuleInterface_vnx_get_config_return::create();
+			_return_value->_ret_0 = vnx_get_config(_args->name);
+			return _return_value;
+		}
+		case 0x17f58f68bf83abc0ull: {
+			auto _args = std::static_pointer_cast<const ::vnx::ModuleInterface_vnx_get_config_object>(_method);
+			auto _return_value = ::vnx::ModuleInterface_vnx_get_config_object_return::create();
+			_return_value->_ret_0 = vnx_get_config_object();
+			return _return_value;
+		}
+		case 0xf6d82bdf66d034a1ull: {
+			auto _args = std::static_pointer_cast<const ::vnx::ModuleInterface_vnx_get_module_info>(_method);
+			auto _return_value = ::vnx::ModuleInterface_vnx_get_module_info_return::create();
+			_return_value->_ret_0 = vnx_get_module_info();
+			return _return_value;
+		}
+		case 0x305ec4d628960e5dull: {
+			auto _args = std::static_pointer_cast<const ::vnx::ModuleInterface_vnx_get_type_code>(_method);
+			auto _return_value = ::vnx::ModuleInterface_vnx_get_type_code_return::create();
+			_return_value->_ret_0 = vnx_get_type_code();
+			return _return_value;
+		}
+		case 0x9e95dc280cecca1bull: {
+			auto _args = std::static_pointer_cast<const ::vnx::ModuleInterface_vnx_restart>(_method);
+			auto _return_value = ::vnx::ModuleInterface_vnx_restart_return::create();
+			vnx_restart();
+			return _return_value;
+		}
+		case 0x6ce3775b41a42697ull: {
+			auto _args = std::static_pointer_cast<const ::vnx::ModuleInterface_vnx_self_test>(_method);
+			auto _return_value = ::vnx::ModuleInterface_vnx_self_test_return::create();
+			_return_value->_ret_0 = vnx_self_test();
+			return _return_value;
+		}
+		case 0x362aac91373958b7ull: {
+			auto _args = std::static_pointer_cast<const ::vnx::ModuleInterface_vnx_set_config>(_method);
+			auto _return_value = ::vnx::ModuleInterface_vnx_set_config_return::create();
+			vnx_set_config(_args->name, _args->value);
+			return _return_value;
+		}
+		case 0xca30f814f17f322full: {
+			auto _args = std::static_pointer_cast<const ::vnx::ModuleInterface_vnx_set_config_object>(_method);
+			auto _return_value = ::vnx::ModuleInterface_vnx_set_config_object_return::create();
+			vnx_set_config_object(_args->config);
+			return _return_value;
+		}
+		case 0x7ab49ce3d1bfc0d2ull: {
+			auto _args = std::static_pointer_cast<const ::vnx::ModuleInterface_vnx_stop>(_method);
+			auto _return_value = ::vnx::ModuleInterface_vnx_stop_return::create();
+			vnx_stop();
+			return _return_value;
+		}
+	}
+	auto _ex = vnx::NoSuchMethod::create();
+	_ex->dst_mac = vnx_request ? vnx_request->dst_mac : vnx::Hash64();
+	_ex->method = _method->get_type_name();
+	return _ex;
 }
 
 
@@ -137,20 +248,39 @@ bool GPIO_PPS_ReceiverBase::call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _o
 namespace vnx {
 
 void read(TypeInput& in, ::automy::vehicle::GPIO_PPS_ReceiverBase& value, const TypeCode* type_code, const uint16_t* code) {
+	if(code) {
+		switch(code[0]) {
+			case CODE_OBJECT:
+			case CODE_ALT_OBJECT: {
+				Object tmp;
+				vnx::read(in, tmp, type_code, code);
+				value.from_object(tmp);
+				return;
+			}
+			case CODE_DYNAMIC:
+			case CODE_ALT_DYNAMIC:
+				vnx::read_dynamic(in, value);
+				return;
+		}
+	}
 	if(!type_code) {
-		throw std::logic_error("read(): type_code == 0");
+		vnx::skip(in, type_code, code);
+		return;
 	}
 	if(code) {
 		switch(code[0]) {
 			case CODE_STRUCT: type_code = type_code->depends[code[1]]; break;
 			case CODE_ALT_STRUCT: type_code = type_code->depends[vnx::flip_bytes(code[1])]; break;
-			default: vnx::skip(in, type_code, code); return;
+			default: {
+				vnx::skip(in, type_code, code);
+				return;
+			}
 		}
 	}
-	const char* const _buf = in.read(type_code->total_field_size);
+	in.read(type_code->total_field_size);
 	if(type_code->is_matched) {
 	}
-	for(const vnx::TypeField* _field : type_code->ext_fields) {
+	for(const auto* _field : type_code->ext_fields) {
 		switch(_field->native_index) {
 			case 0: vnx::read(in, value.output, type_code, _field->code.data()); break;
 			case 1: vnx::read(in, value.device, type_code, _field->code.data()); break;
@@ -160,11 +290,16 @@ void read(TypeInput& in, ::automy::vehicle::GPIO_PPS_ReceiverBase& value, const 
 }
 
 void write(TypeOutput& out, const ::automy::vehicle::GPIO_PPS_ReceiverBase& value, const TypeCode* type_code, const uint16_t* code) {
+	if(code && code[0] == CODE_OBJECT) {
+		vnx::write(out, value.to_object(), nullptr, code);
+		return;
+	}
 	if(!type_code || (code && code[0] == CODE_ANY)) {
-		type_code = vnx::write_type_code<::automy::vehicle::GPIO_PPS_ReceiverBase>(out);
+		type_code = automy::vehicle::vnx_native_type_code_GPIO_PPS_ReceiverBase;
+		out.write_type_code(type_code);
 		vnx::write_class_header<::automy::vehicle::GPIO_PPS_ReceiverBase>(out);
 	}
-	if(code && code[0] == CODE_STRUCT) {
+	else if(code && code[0] == CODE_STRUCT) {
 		type_code = type_code->depends[code[1]];
 	}
 	vnx::write(out, value.output, type_code, type_code->fields[0].code.data());

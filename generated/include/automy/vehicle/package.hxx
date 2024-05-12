@@ -10,9 +10,19 @@
 #include <automy/math/package.hxx>
 #include <vnx/package.hxx>
 
+#ifdef AUTOMY_VEHICLE_EXPORT_ENABLE
+#include <automy_vehicle_export.h>
+#else
+#ifndef AUTOMY_VEHICLE_EXPORT
+#define AUTOMY_VEHICLE_EXPORT
+#endif
+#endif
+
 
 namespace automy {
 namespace vehicle {
+
+void register_all_types();
 
 
 class GPIO_PPS_ReceiverBase;
@@ -25,6 +35,17 @@ class UbloxReceiverBase;
 class VehicleDimensions;
 class VehicleInfo;
 class WheelSpeed;
+
+AUTOMY_VEHICLE_EXPORT extern const vnx::TypeCode* const vnx_native_type_code_GPIO_PPS_ReceiverBase; ///< \private
+AUTOMY_VEHICLE_EXPORT extern const vnx::TypeCode* const vnx_native_type_code_GPS_Info; ///< \private
+AUTOMY_VEHICLE_EXPORT extern const vnx::TypeCode* const vnx_native_type_code_IMU_Info; ///< \private
+AUTOMY_VEHICLE_EXPORT extern const vnx::TypeCode* const vnx_native_type_code_Odometry; ///< \private
+AUTOMY_VEHICLE_EXPORT extern const vnx::TypeCode* const vnx_native_type_code_PPS_Signal; ///< \private
+AUTOMY_VEHICLE_EXPORT extern const vnx::TypeCode* const vnx_native_type_code_UBX_Packet; ///< \private
+AUTOMY_VEHICLE_EXPORT extern const vnx::TypeCode* const vnx_native_type_code_UbloxReceiverBase; ///< \private
+AUTOMY_VEHICLE_EXPORT extern const vnx::TypeCode* const vnx_native_type_code_VehicleDimensions; ///< \private
+AUTOMY_VEHICLE_EXPORT extern const vnx::TypeCode* const vnx_native_type_code_VehicleInfo; ///< \private
+AUTOMY_VEHICLE_EXPORT extern const vnx::TypeCode* const vnx_native_type_code_WheelSpeed; ///< \private
 
 } // namespace automy
 } // namespace vehicle
@@ -105,9 +126,6 @@ struct type<::automy::vehicle::GPIO_PPS_ReceiverBase> {
 	void accept(Visitor& visitor, const ::automy::vehicle::GPIO_PPS_ReceiverBase& value) {
 		vnx::accept(visitor, value);
 	}
-	void create_dynamic_code(std::vector<uint16_t>& code) {
-		code.push_back(CODE_ANY);
-	}
 };
 
 /// \private
@@ -128,9 +146,9 @@ struct type<::automy::vehicle::GPS_Info> {
 	void accept(Visitor& visitor, const ::automy::vehicle::GPS_Info& value) {
 		vnx::accept(visitor, value);
 	}
-	void create_dynamic_code(std::vector<uint16_t>& code) {
-		code.push_back(CODE_ANY);
-	}
+	const TypeCode* get_type_code();
+	void create_dynamic_code(std::vector<uint16_t>& code);
+	void create_dynamic_code(std::vector<uint16_t>& code, const ::automy::vehicle::GPS_Info& value, bool special = false);
 };
 
 /// \private
@@ -151,9 +169,9 @@ struct type<::automy::vehicle::IMU_Info> {
 	void accept(Visitor& visitor, const ::automy::vehicle::IMU_Info& value) {
 		vnx::accept(visitor, value);
 	}
-	void create_dynamic_code(std::vector<uint16_t>& code) {
-		code.push_back(CODE_ANY);
-	}
+	const TypeCode* get_type_code();
+	void create_dynamic_code(std::vector<uint16_t>& code);
+	void create_dynamic_code(std::vector<uint16_t>& code, const ::automy::vehicle::IMU_Info& value, bool special = false);
 };
 
 /// \private
@@ -174,9 +192,9 @@ struct type<::automy::vehicle::Odometry> {
 	void accept(Visitor& visitor, const ::automy::vehicle::Odometry& value) {
 		vnx::accept(visitor, value);
 	}
-	void create_dynamic_code(std::vector<uint16_t>& code) {
-		code.push_back(CODE_ANY);
-	}
+	const TypeCode* get_type_code();
+	void create_dynamic_code(std::vector<uint16_t>& code);
+	void create_dynamic_code(std::vector<uint16_t>& code, const ::automy::vehicle::Odometry& value, bool special = false);
 };
 
 /// \private
@@ -197,9 +215,9 @@ struct type<::automy::vehicle::PPS_Signal> {
 	void accept(Visitor& visitor, const ::automy::vehicle::PPS_Signal& value) {
 		vnx::accept(visitor, value);
 	}
-	void create_dynamic_code(std::vector<uint16_t>& code) {
-		code.push_back(CODE_ANY);
-	}
+	const TypeCode* get_type_code();
+	void create_dynamic_code(std::vector<uint16_t>& code);
+	void create_dynamic_code(std::vector<uint16_t>& code, const ::automy::vehicle::PPS_Signal& value, bool special = false);
 };
 
 /// \private
@@ -220,9 +238,9 @@ struct type<::automy::vehicle::UBX_Packet> {
 	void accept(Visitor& visitor, const ::automy::vehicle::UBX_Packet& value) {
 		vnx::accept(visitor, value);
 	}
-	void create_dynamic_code(std::vector<uint16_t>& code) {
-		code.push_back(CODE_ANY);
-	}
+	const TypeCode* get_type_code();
+	void create_dynamic_code(std::vector<uint16_t>& code);
+	void create_dynamic_code(std::vector<uint16_t>& code, const ::automy::vehicle::UBX_Packet& value, bool special = false);
 };
 
 /// \private
@@ -242,9 +260,6 @@ struct type<::automy::vehicle::UbloxReceiverBase> {
 	}
 	void accept(Visitor& visitor, const ::automy::vehicle::UbloxReceiverBase& value) {
 		vnx::accept(visitor, value);
-	}
-	void create_dynamic_code(std::vector<uint16_t>& code) {
-		code.push_back(CODE_ANY);
 	}
 };
 
@@ -266,9 +281,9 @@ struct type<::automy::vehicle::VehicleDimensions> {
 	void accept(Visitor& visitor, const ::automy::vehicle::VehicleDimensions& value) {
 		vnx::accept(visitor, value);
 	}
-	void create_dynamic_code(std::vector<uint16_t>& code) {
-		code.push_back(CODE_ANY);
-	}
+	const TypeCode* get_type_code();
+	void create_dynamic_code(std::vector<uint16_t>& code);
+	void create_dynamic_code(std::vector<uint16_t>& code, const ::automy::vehicle::VehicleDimensions& value, bool special = false);
 };
 
 /// \private
@@ -289,9 +304,9 @@ struct type<::automy::vehicle::VehicleInfo> {
 	void accept(Visitor& visitor, const ::automy::vehicle::VehicleInfo& value) {
 		vnx::accept(visitor, value);
 	}
-	void create_dynamic_code(std::vector<uint16_t>& code) {
-		code.push_back(CODE_ANY);
-	}
+	const TypeCode* get_type_code();
+	void create_dynamic_code(std::vector<uint16_t>& code);
+	void create_dynamic_code(std::vector<uint16_t>& code, const ::automy::vehicle::VehicleInfo& value, bool special = false);
 };
 
 /// \private
@@ -312,9 +327,9 @@ struct type<::automy::vehicle::WheelSpeed> {
 	void accept(Visitor& visitor, const ::automy::vehicle::WheelSpeed& value) {
 		vnx::accept(visitor, value);
 	}
-	void create_dynamic_code(std::vector<uint16_t>& code) {
-		code.push_back(CODE_ANY);
-	}
+	const TypeCode* get_type_code();
+	void create_dynamic_code(std::vector<uint16_t>& code);
+	void create_dynamic_code(std::vector<uint16_t>& code, const ::automy::vehicle::WheelSpeed& value, bool special = false);
 };
 
 

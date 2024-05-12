@@ -3,11 +3,9 @@
 
 #include <automy/vehicle/package.hxx>
 #include <automy/vehicle/WheelSpeed.hxx>
-#include <vnx/Input.h>
-#include <vnx/Output.h>
-#include <vnx/Visitor.h>
-#include <vnx/Object.h>
-#include <vnx/Struct.h>
+#include <vnx/Value.h>
+
+#include <vnx/vnx.h>
 
 
 namespace automy {
@@ -21,8 +19,12 @@ vnx::Hash64 WheelSpeed::get_type_hash() const {
 	return VNX_TYPE_HASH;
 }
 
-const char* WheelSpeed::get_type_name() const {
+std::string WheelSpeed::get_type_name() const {
 	return "automy.vehicle.WheelSpeed";
+}
+
+const vnx::TypeCode* WheelSpeed::get_type_code() const {
+	return automy::vehicle::vnx_native_type_code_WheelSpeed;
 }
 
 std::shared_ptr<WheelSpeed> WheelSpeed::create() {
@@ -42,7 +44,7 @@ void WheelSpeed::write(vnx::TypeOutput& _out, const vnx::TypeCode* _type_code, c
 }
 
 void WheelSpeed::accept(vnx::Visitor& _visitor) const {
-	const vnx::TypeCode* _type_code = get_type_code();
+	const vnx::TypeCode* _type_code = automy::vehicle::vnx_native_type_code_WheelSpeed;
 	_visitor.type_begin(*_type_code);
 	_visitor.type_field(_type_code->fields[0], 0); vnx::accept(_visitor, time);
 	_visitor.type_field(_type_code->fields[1], 1); vnx::accept(_visitor, front_left);
@@ -53,8 +55,8 @@ void WheelSpeed::accept(vnx::Visitor& _visitor) const {
 }
 
 void WheelSpeed::write(std::ostream& _out) const {
-	_out << "{";
-	_out << "\"time\": "; vnx::write(_out, time);
+	_out << "{\"__type\": \"automy.vehicle.WheelSpeed\"";
+	_out << ", \"time\": "; vnx::write(_out, time);
 	_out << ", \"front_left\": "; vnx::write(_out, front_left);
 	_out << ", \"front_right\": "; vnx::write(_out, front_right);
 	_out << ", \"rear_left\": "; vnx::write(_out, rear_left);
@@ -63,25 +65,14 @@ void WheelSpeed::write(std::ostream& _out) const {
 }
 
 void WheelSpeed::read(std::istream& _in) {
-	std::map<std::string, std::string> _object;
-	vnx::read_object(_in, _object);
-	for(const auto& _entry : _object) {
-		if(_entry.first == "front_left") {
-			vnx::from_string(_entry.second, front_left);
-		} else if(_entry.first == "front_right") {
-			vnx::from_string(_entry.second, front_right);
-		} else if(_entry.first == "rear_left") {
-			vnx::from_string(_entry.second, rear_left);
-		} else if(_entry.first == "rear_right") {
-			vnx::from_string(_entry.second, rear_right);
-		} else if(_entry.first == "time") {
-			vnx::from_string(_entry.second, time);
-		}
+	if(auto _json = vnx::read_json(_in)) {
+		from_object(_json->to_object());
 	}
 }
 
 vnx::Object WheelSpeed::to_object() const {
 	vnx::Object _object;
+	_object["__type"] = "automy.vehicle.WheelSpeed";
 	_object["time"] = time;
 	_object["front_left"] = front_left;
 	_object["front_right"] = front_right;
@@ -106,6 +97,39 @@ void WheelSpeed::from_object(const vnx::Object& _object) {
 	}
 }
 
+vnx::Variant WheelSpeed::get_field(const std::string& _name) const {
+	if(_name == "time") {
+		return vnx::Variant(time);
+	}
+	if(_name == "front_left") {
+		return vnx::Variant(front_left);
+	}
+	if(_name == "front_right") {
+		return vnx::Variant(front_right);
+	}
+	if(_name == "rear_left") {
+		return vnx::Variant(rear_left);
+	}
+	if(_name == "rear_right") {
+		return vnx::Variant(rear_right);
+	}
+	return vnx::Variant();
+}
+
+void WheelSpeed::set_field(const std::string& _name, const vnx::Variant& _value) {
+	if(_name == "time") {
+		_value.to(time);
+	} else if(_name == "front_left") {
+		_value.to(front_left);
+	} else if(_name == "front_right") {
+		_value.to(front_right);
+	} else if(_name == "rear_left") {
+		_value.to(rear_left);
+	} else if(_name == "rear_right") {
+		_value.to(rear_right);
+	}
+}
+
 /// \private
 std::ostream& operator<<(std::ostream& _out, const WheelSpeed& _value) {
 	_value.write(_out);
@@ -118,49 +142,62 @@ std::istream& operator>>(std::istream& _in, WheelSpeed& _value) {
 	return _in;
 }
 
-const vnx::TypeCode* WheelSpeed::get_type_code() {
-	const vnx::TypeCode* type_code = vnx::get_type_code(vnx::Hash64(0x1094dcbeca93a65dull));
+const vnx::TypeCode* WheelSpeed::static_get_type_code() {
+	const vnx::TypeCode* type_code = vnx::get_type_code(VNX_TYPE_HASH);
 	if(!type_code) {
-		type_code = vnx::register_type_code(create_type_code());
+		type_code = vnx::register_type_code(static_create_type_code());
 	}
 	return type_code;
 }
 
-std::shared_ptr<vnx::TypeCode> WheelSpeed::create_type_code() {
-	std::shared_ptr<vnx::TypeCode> type_code = std::make_shared<vnx::TypeCode>(true);
+std::shared_ptr<vnx::TypeCode> WheelSpeed::static_create_type_code() {
+	auto type_code = std::make_shared<vnx::TypeCode>();
 	type_code->name = "automy.vehicle.WheelSpeed";
 	type_code->type_hash = vnx::Hash64(0x1094dcbeca93a65dull);
 	type_code->code_hash = vnx::Hash64(0x3ad51968cbfab75bull);
+	type_code->is_native = true;
 	type_code->is_class = true;
+	type_code->native_size = sizeof(::automy::vehicle::WheelSpeed);
 	type_code->create_value = []() -> std::shared_ptr<vnx::Value> { return std::make_shared<WheelSpeed>(); };
 	type_code->fields.resize(5);
 	{
-		vnx::TypeField& field = type_code->fields[0];
+		auto& field = type_code->fields[0];
+		field.data_size = 8;
 		field.name = "time";
 		field.code = {8};
 	}
 	{
-		vnx::TypeField& field = type_code->fields[1];
+		auto& field = type_code->fields[1];
+		field.data_size = 4;
 		field.name = "front_left";
 		field.code = {9};
 	}
 	{
-		vnx::TypeField& field = type_code->fields[2];
+		auto& field = type_code->fields[2];
+		field.data_size = 4;
 		field.name = "front_right";
 		field.code = {9};
 	}
 	{
-		vnx::TypeField& field = type_code->fields[3];
+		auto& field = type_code->fields[3];
+		field.data_size = 4;
 		field.name = "rear_left";
 		field.code = {9};
 	}
 	{
-		vnx::TypeField& field = type_code->fields[4];
+		auto& field = type_code->fields[4];
+		field.data_size = 4;
 		field.name = "rear_right";
 		field.code = {9};
 	}
 	type_code->build();
 	return type_code;
+}
+
+std::shared_ptr<vnx::Value> WheelSpeed::vnx_call_switch(std::shared_ptr<const vnx::Value> _method) {
+	switch(_method->get_type_hash()) {
+	}
+	return nullptr;
 }
 
 
@@ -171,50 +208,54 @@ std::shared_ptr<vnx::TypeCode> WheelSpeed::create_type_code() {
 namespace vnx {
 
 void read(TypeInput& in, ::automy::vehicle::WheelSpeed& value, const TypeCode* type_code, const uint16_t* code) {
+	if(code) {
+		switch(code[0]) {
+			case CODE_OBJECT:
+			case CODE_ALT_OBJECT: {
+				Object tmp;
+				vnx::read(in, tmp, type_code, code);
+				value.from_object(tmp);
+				return;
+			}
+			case CODE_DYNAMIC:
+			case CODE_ALT_DYNAMIC:
+				vnx::read_dynamic(in, value);
+				return;
+		}
+	}
 	if(!type_code) {
-		throw std::logic_error("read(): type_code == 0");
+		vnx::skip(in, type_code, code);
+		return;
 	}
 	if(code) {
 		switch(code[0]) {
 			case CODE_STRUCT: type_code = type_code->depends[code[1]]; break;
 			case CODE_ALT_STRUCT: type_code = type_code->depends[vnx::flip_bytes(code[1])]; break;
-			default: vnx::skip(in, type_code, code); return;
+			default: {
+				vnx::skip(in, type_code, code);
+				return;
+			}
 		}
 	}
-	const char* const _buf = in.read(type_code->total_field_size);
+	const auto* const _buf = in.read(type_code->total_field_size);
 	if(type_code->is_matched) {
-		{
-			const vnx::TypeField* const _field = type_code->field_map[0];
-			if(_field) {
-				vnx::read_value(_buf + _field->offset, value.time, _field->code.data());
-			}
+		if(const auto* const _field = type_code->field_map[0]) {
+			vnx::read_value(_buf + _field->offset, value.time, _field->code.data());
 		}
-		{
-			const vnx::TypeField* const _field = type_code->field_map[1];
-			if(_field) {
-				vnx::read_value(_buf + _field->offset, value.front_left, _field->code.data());
-			}
+		if(const auto* const _field = type_code->field_map[1]) {
+			vnx::read_value(_buf + _field->offset, value.front_left, _field->code.data());
 		}
-		{
-			const vnx::TypeField* const _field = type_code->field_map[2];
-			if(_field) {
-				vnx::read_value(_buf + _field->offset, value.front_right, _field->code.data());
-			}
+		if(const auto* const _field = type_code->field_map[2]) {
+			vnx::read_value(_buf + _field->offset, value.front_right, _field->code.data());
 		}
-		{
-			const vnx::TypeField* const _field = type_code->field_map[3];
-			if(_field) {
-				vnx::read_value(_buf + _field->offset, value.rear_left, _field->code.data());
-			}
+		if(const auto* const _field = type_code->field_map[3]) {
+			vnx::read_value(_buf + _field->offset, value.rear_left, _field->code.data());
 		}
-		{
-			const vnx::TypeField* const _field = type_code->field_map[4];
-			if(_field) {
-				vnx::read_value(_buf + _field->offset, value.rear_right, _field->code.data());
-			}
+		if(const auto* const _field = type_code->field_map[4]) {
+			vnx::read_value(_buf + _field->offset, value.rear_right, _field->code.data());
 		}
 	}
-	for(const vnx::TypeField* _field : type_code->ext_fields) {
+	for(const auto* _field : type_code->ext_fields) {
 		switch(_field->native_index) {
 			default: vnx::skip(in, type_code, _field->code.data());
 		}
@@ -222,14 +263,19 @@ void read(TypeInput& in, ::automy::vehicle::WheelSpeed& value, const TypeCode* t
 }
 
 void write(TypeOutput& out, const ::automy::vehicle::WheelSpeed& value, const TypeCode* type_code, const uint16_t* code) {
+	if(code && code[0] == CODE_OBJECT) {
+		vnx::write(out, value.to_object(), nullptr, code);
+		return;
+	}
 	if(!type_code || (code && code[0] == CODE_ANY)) {
-		type_code = vnx::write_type_code<::automy::vehicle::WheelSpeed>(out);
+		type_code = automy::vehicle::vnx_native_type_code_WheelSpeed;
+		out.write_type_code(type_code);
 		vnx::write_class_header<::automy::vehicle::WheelSpeed>(out);
 	}
-	if(code && code[0] == CODE_STRUCT) {
+	else if(code && code[0] == CODE_STRUCT) {
 		type_code = type_code->depends[code[1]];
 	}
-	char* const _buf = out.write(24);
+	auto* const _buf = out.write(24);
 	vnx::write_value(_buf + 0, value.time);
 	vnx::write_value(_buf + 8, value.front_left);
 	vnx::write_value(_buf + 12, value.front_right);

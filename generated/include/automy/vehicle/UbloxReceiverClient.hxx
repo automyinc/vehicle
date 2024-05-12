@@ -5,11 +5,11 @@
 #define INCLUDE_automy_vehicle_UbloxReceiver_CLIENT_HXX_
 
 #include <vnx/Client.h>
-#include <automy/math/Vector3d.h>
+#include <automy/math/Vector3d.hpp>
 #include <automy/vehicle/PPS_Signal.hxx>
 #include <automy/vehicle/UBX_Packet.hxx>
 #include <vnx/Module.h>
-#include <vnx/TopicPtr.h>
+#include <vnx/TopicPtr.hpp>
 
 
 namespace automy {
@@ -21,13 +21,31 @@ public:
 	
 	UbloxReceiverClient(vnx::Hash64 service_addr);
 	
-	void handle(const ::std::shared_ptr<const ::automy::vehicle::PPS_Signal>& sample);
+	::vnx::Object vnx_get_config_object();
 	
-	void handle_async(const ::std::shared_ptr<const ::automy::vehicle::PPS_Signal>& sample);
+	::vnx::Variant vnx_get_config(const std::string& name = "");
 	
-	void handle(const ::std::shared_ptr<const ::automy::vehicle::UBX_Packet>& sample);
+	void vnx_set_config_object(const ::vnx::Object& config = ::vnx::Object());
 	
-	void handle_async(const ::std::shared_ptr<const ::automy::vehicle::UBX_Packet>& sample);
+	void vnx_set_config_object_async(const ::vnx::Object& config = ::vnx::Object());
+	
+	void vnx_set_config(const std::string& name = "", const ::vnx::Variant& value = ::vnx::Variant());
+	
+	void vnx_set_config_async(const std::string& name = "", const ::vnx::Variant& value = ::vnx::Variant());
+	
+	::vnx::TypeCode vnx_get_type_code();
+	
+	std::shared_ptr<const ::vnx::ModuleInfo> vnx_get_module_info();
+	
+	void vnx_restart();
+	
+	void vnx_restart_async();
+	
+	void vnx_stop();
+	
+	void vnx_stop_async();
+	
+	vnx::bool_t vnx_self_test();
 	
 };
 

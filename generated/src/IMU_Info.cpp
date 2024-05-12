@@ -3,11 +3,10 @@
 
 #include <automy/vehicle/package.hxx>
 #include <automy/vehicle/IMU_Info.hxx>
-#include <vnx/Input.h>
-#include <vnx/Output.h>
-#include <vnx/Visitor.h>
-#include <vnx/Object.h>
-#include <vnx/Struct.h>
+#include <automy/math/Vector3f.hpp>
+#include <vnx/Value.h>
+
+#include <vnx/vnx.h>
 
 
 namespace automy {
@@ -21,8 +20,12 @@ vnx::Hash64 IMU_Info::get_type_hash() const {
 	return VNX_TYPE_HASH;
 }
 
-const char* IMU_Info::get_type_name() const {
+std::string IMU_Info::get_type_name() const {
 	return "automy.vehicle.IMU_Info";
+}
+
+const vnx::TypeCode* IMU_Info::get_type_code() const {
+	return automy::vehicle::vnx_native_type_code_IMU_Info;
 }
 
 std::shared_ptr<IMU_Info> IMU_Info::create() {
@@ -42,7 +45,7 @@ void IMU_Info::write(vnx::TypeOutput& _out, const vnx::TypeCode* _type_code, con
 }
 
 void IMU_Info::accept(vnx::Visitor& _visitor) const {
-	const vnx::TypeCode* _type_code = get_type_code();
+	const vnx::TypeCode* _type_code = automy::vehicle::vnx_native_type_code_IMU_Info;
 	_visitor.type_begin(*_type_code);
 	_visitor.type_field(_type_code->fields[0], 0); vnx::accept(_visitor, time);
 	_visitor.type_field(_type_code->fields[1], 1); vnx::accept(_visitor, gyro_rates);
@@ -52,8 +55,8 @@ void IMU_Info::accept(vnx::Visitor& _visitor) const {
 }
 
 void IMU_Info::write(std::ostream& _out) const {
-	_out << "{";
-	_out << "\"time\": "; vnx::write(_out, time);
+	_out << "{\"__type\": \"automy.vehicle.IMU_Info\"";
+	_out << ", \"time\": "; vnx::write(_out, time);
 	_out << ", \"gyro_rates\": "; vnx::write(_out, gyro_rates);
 	_out << ", \"acceleration\": "; vnx::write(_out, acceleration);
 	_out << ", \"temperature\": "; vnx::write(_out, temperature);
@@ -61,23 +64,14 @@ void IMU_Info::write(std::ostream& _out) const {
 }
 
 void IMU_Info::read(std::istream& _in) {
-	std::map<std::string, std::string> _object;
-	vnx::read_object(_in, _object);
-	for(const auto& _entry : _object) {
-		if(_entry.first == "acceleration") {
-			vnx::from_string(_entry.second, acceleration);
-		} else if(_entry.first == "gyro_rates") {
-			vnx::from_string(_entry.second, gyro_rates);
-		} else if(_entry.first == "temperature") {
-			vnx::from_string(_entry.second, temperature);
-		} else if(_entry.first == "time") {
-			vnx::from_string(_entry.second, time);
-		}
+	if(auto _json = vnx::read_json(_in)) {
+		from_object(_json->to_object());
 	}
 }
 
 vnx::Object IMU_Info::to_object() const {
 	vnx::Object _object;
+	_object["__type"] = "automy.vehicle.IMU_Info";
 	_object["time"] = time;
 	_object["gyro_rates"] = gyro_rates;
 	_object["acceleration"] = acceleration;
@@ -99,6 +93,34 @@ void IMU_Info::from_object(const vnx::Object& _object) {
 	}
 }
 
+vnx::Variant IMU_Info::get_field(const std::string& _name) const {
+	if(_name == "time") {
+		return vnx::Variant(time);
+	}
+	if(_name == "gyro_rates") {
+		return vnx::Variant(gyro_rates);
+	}
+	if(_name == "acceleration") {
+		return vnx::Variant(acceleration);
+	}
+	if(_name == "temperature") {
+		return vnx::Variant(temperature);
+	}
+	return vnx::Variant();
+}
+
+void IMU_Info::set_field(const std::string& _name, const vnx::Variant& _value) {
+	if(_name == "time") {
+		_value.to(time);
+	} else if(_name == "gyro_rates") {
+		_value.to(gyro_rates);
+	} else if(_name == "acceleration") {
+		_value.to(acceleration);
+	} else if(_name == "temperature") {
+		_value.to(temperature);
+	}
+}
+
 /// \private
 std::ostream& operator<<(std::ostream& _out, const IMU_Info& _value) {
 	_value.write(_out);
@@ -111,46 +133,56 @@ std::istream& operator>>(std::istream& _in, IMU_Info& _value) {
 	return _in;
 }
 
-const vnx::TypeCode* IMU_Info::get_type_code() {
-	const vnx::TypeCode* type_code = vnx::get_type_code(vnx::Hash64(0x29dd9d37c10e981full));
+const vnx::TypeCode* IMU_Info::static_get_type_code() {
+	const vnx::TypeCode* type_code = vnx::get_type_code(VNX_TYPE_HASH);
 	if(!type_code) {
-		type_code = vnx::register_type_code(create_type_code());
+		type_code = vnx::register_type_code(static_create_type_code());
 	}
 	return type_code;
 }
 
-std::shared_ptr<vnx::TypeCode> IMU_Info::create_type_code() {
-	std::shared_ptr<vnx::TypeCode> type_code = std::make_shared<vnx::TypeCode>(true);
+std::shared_ptr<vnx::TypeCode> IMU_Info::static_create_type_code() {
+	auto type_code = std::make_shared<vnx::TypeCode>();
 	type_code->name = "automy.vehicle.IMU_Info";
 	type_code->type_hash = vnx::Hash64(0x29dd9d37c10e981full);
 	type_code->code_hash = vnx::Hash64(0x7d896c4b3e90dfcaull);
+	type_code->is_native = true;
 	type_code->is_class = true;
+	type_code->native_size = sizeof(::automy::vehicle::IMU_Info);
 	type_code->create_value = []() -> std::shared_ptr<vnx::Value> { return std::make_shared<IMU_Info>(); };
 	type_code->fields.resize(4);
 	{
-		vnx::TypeField& field = type_code->fields[0];
+		auto& field = type_code->fields[0];
+		field.data_size = 8;
 		field.name = "time";
 		field.code = {8};
 	}
 	{
-		vnx::TypeField& field = type_code->fields[1];
+		auto& field = type_code->fields[1];
 		field.is_extended = true;
 		field.name = "gyro_rates";
 		field.code = {21, 2, 3, 1, 9};
 	}
 	{
-		vnx::TypeField& field = type_code->fields[2];
+		auto& field = type_code->fields[2];
 		field.is_extended = true;
 		field.name = "acceleration";
 		field.code = {21, 2, 3, 1, 9};
 	}
 	{
-		vnx::TypeField& field = type_code->fields[3];
+		auto& field = type_code->fields[3];
+		field.data_size = 4;
 		field.name = "temperature";
 		field.code = {9};
 	}
 	type_code->build();
 	return type_code;
+}
+
+std::shared_ptr<vnx::Value> IMU_Info::vnx_call_switch(std::shared_ptr<const vnx::Value> _method) {
+	switch(_method->get_type_hash()) {
+	}
+	return nullptr;
 }
 
 
@@ -161,32 +193,45 @@ std::shared_ptr<vnx::TypeCode> IMU_Info::create_type_code() {
 namespace vnx {
 
 void read(TypeInput& in, ::automy::vehicle::IMU_Info& value, const TypeCode* type_code, const uint16_t* code) {
+	if(code) {
+		switch(code[0]) {
+			case CODE_OBJECT:
+			case CODE_ALT_OBJECT: {
+				Object tmp;
+				vnx::read(in, tmp, type_code, code);
+				value.from_object(tmp);
+				return;
+			}
+			case CODE_DYNAMIC:
+			case CODE_ALT_DYNAMIC:
+				vnx::read_dynamic(in, value);
+				return;
+		}
+	}
 	if(!type_code) {
-		throw std::logic_error("read(): type_code == 0");
+		vnx::skip(in, type_code, code);
+		return;
 	}
 	if(code) {
 		switch(code[0]) {
 			case CODE_STRUCT: type_code = type_code->depends[code[1]]; break;
 			case CODE_ALT_STRUCT: type_code = type_code->depends[vnx::flip_bytes(code[1])]; break;
-			default: vnx::skip(in, type_code, code); return;
+			default: {
+				vnx::skip(in, type_code, code);
+				return;
+			}
 		}
 	}
-	const char* const _buf = in.read(type_code->total_field_size);
+	const auto* const _buf = in.read(type_code->total_field_size);
 	if(type_code->is_matched) {
-		{
-			const vnx::TypeField* const _field = type_code->field_map[0];
-			if(_field) {
-				vnx::read_value(_buf + _field->offset, value.time, _field->code.data());
-			}
+		if(const auto* const _field = type_code->field_map[0]) {
+			vnx::read_value(_buf + _field->offset, value.time, _field->code.data());
 		}
-		{
-			const vnx::TypeField* const _field = type_code->field_map[3];
-			if(_field) {
-				vnx::read_value(_buf + _field->offset, value.temperature, _field->code.data());
-			}
+		if(const auto* const _field = type_code->field_map[3]) {
+			vnx::read_value(_buf + _field->offset, value.temperature, _field->code.data());
 		}
 	}
-	for(const vnx::TypeField* _field : type_code->ext_fields) {
+	for(const auto* _field : type_code->ext_fields) {
 		switch(_field->native_index) {
 			case 1: vnx::read(in, value.gyro_rates, type_code, _field->code.data()); break;
 			case 2: vnx::read(in, value.acceleration, type_code, _field->code.data()); break;
@@ -196,14 +241,19 @@ void read(TypeInput& in, ::automy::vehicle::IMU_Info& value, const TypeCode* typ
 }
 
 void write(TypeOutput& out, const ::automy::vehicle::IMU_Info& value, const TypeCode* type_code, const uint16_t* code) {
+	if(code && code[0] == CODE_OBJECT) {
+		vnx::write(out, value.to_object(), nullptr, code);
+		return;
+	}
 	if(!type_code || (code && code[0] == CODE_ANY)) {
-		type_code = vnx::write_type_code<::automy::vehicle::IMU_Info>(out);
+		type_code = automy::vehicle::vnx_native_type_code_IMU_Info;
+		out.write_type_code(type_code);
 		vnx::write_class_header<::automy::vehicle::IMU_Info>(out);
 	}
-	if(code && code[0] == CODE_STRUCT) {
+	else if(code && code[0] == CODE_STRUCT) {
 		type_code = type_code->depends[code[1]];
 	}
-	char* const _buf = out.write(12);
+	auto* const _buf = out.write(12);
 	vnx::write_value(_buf + 0, value.time);
 	vnx::write_value(_buf + 8, value.temperature);
 	vnx::write(out, value.gyro_rates, type_code, type_code->fields[1].code.data());

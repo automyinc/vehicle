@@ -3,12 +3,32 @@
 
 #include <automy/vehicle/package.hxx>
 #include <automy/vehicle/UbloxReceiverBase.hxx>
-#include <vnx/Input.h>
-#include <vnx/Output.h>
-#include <vnx/Visitor.h>
-#include <vnx/Object.h>
-#include <vnx/Struct.h>
-#include <vnx/Config.h>
+#include <vnx/NoSuchMethod.hxx>
+#include <automy/math/Vector3d.hpp>
+#include <automy/vehicle/PPS_Signal.hxx>
+#include <automy/vehicle/UBX_Packet.hxx>
+#include <vnx/Module.h>
+#include <vnx/ModuleInterface_vnx_get_config.hxx>
+#include <vnx/ModuleInterface_vnx_get_config_return.hxx>
+#include <vnx/ModuleInterface_vnx_get_config_object.hxx>
+#include <vnx/ModuleInterface_vnx_get_config_object_return.hxx>
+#include <vnx/ModuleInterface_vnx_get_module_info.hxx>
+#include <vnx/ModuleInterface_vnx_get_module_info_return.hxx>
+#include <vnx/ModuleInterface_vnx_get_type_code.hxx>
+#include <vnx/ModuleInterface_vnx_get_type_code_return.hxx>
+#include <vnx/ModuleInterface_vnx_restart.hxx>
+#include <vnx/ModuleInterface_vnx_restart_return.hxx>
+#include <vnx/ModuleInterface_vnx_self_test.hxx>
+#include <vnx/ModuleInterface_vnx_self_test_return.hxx>
+#include <vnx/ModuleInterface_vnx_set_config.hxx>
+#include <vnx/ModuleInterface_vnx_set_config_return.hxx>
+#include <vnx/ModuleInterface_vnx_set_config_object.hxx>
+#include <vnx/ModuleInterface_vnx_set_config_object_return.hxx>
+#include <vnx/ModuleInterface_vnx_stop.hxx>
+#include <vnx/ModuleInterface_vnx_stop_return.hxx>
+#include <vnx/TopicPtr.hpp>
+
+#include <vnx/vnx.h>
 
 
 namespace automy {
@@ -21,24 +41,28 @@ const vnx::Hash64 UbloxReceiverBase::VNX_CODE_HASH(0x88e03adee15a2341ull);
 UbloxReceiverBase::UbloxReceiverBase(const std::string& _vnx_name)
 	:	Module::Module(_vnx_name)
 {
-	vnx::read_config(vnx_name + ".antenna_pos", antenna_pos);
-	vnx::read_config(vnx_name + ".baudrate", baudrate);
-	vnx::read_config(vnx_name + ".input_pps", input_pps);
 	vnx::read_config(vnx_name + ".output", output);
-	vnx::read_config(vnx_name + ".port", port);
 	vnx::read_config(vnx_name + ".topic_msgs", topic_msgs);
+	vnx::read_config(vnx_name + ".input_pps", input_pps);
+	vnx::read_config(vnx_name + ".port", port);
+	vnx::read_config(vnx_name + ".baudrate", baudrate);
+	vnx::read_config(vnx_name + ".antenna_pos", antenna_pos);
 }
 
 vnx::Hash64 UbloxReceiverBase::get_type_hash() const {
 	return VNX_TYPE_HASH;
 }
 
-const char* UbloxReceiverBase::get_type_name() const {
+std::string UbloxReceiverBase::get_type_name() const {
 	return "automy.vehicle.UbloxReceiver";
 }
 
+const vnx::TypeCode* UbloxReceiverBase::get_type_code() const {
+	return automy::vehicle::vnx_native_type_code_UbloxReceiverBase;
+}
+
 void UbloxReceiverBase::accept(vnx::Visitor& _visitor) const {
-	const vnx::TypeCode* _type_code = get_type_code();
+	const vnx::TypeCode* _type_code = automy::vehicle::vnx_native_type_code_UbloxReceiverBase;
 	_visitor.type_begin(*_type_code);
 	_visitor.type_field(_type_code->fields[0], 0); vnx::accept(_visitor, output);
 	_visitor.type_field(_type_code->fields[1], 1); vnx::accept(_visitor, topic_msgs);
@@ -61,27 +85,14 @@ void UbloxReceiverBase::write(std::ostream& _out) const {
 }
 
 void UbloxReceiverBase::read(std::istream& _in) {
-	std::map<std::string, std::string> _object;
-	vnx::read_object(_in, _object);
-	for(const auto& _entry : _object) {
-		if(_entry.first == "antenna_pos") {
-			vnx::from_string(_entry.second, antenna_pos);
-		} else if(_entry.first == "baudrate") {
-			vnx::from_string(_entry.second, baudrate);
-		} else if(_entry.first == "input_pps") {
-			vnx::from_string(_entry.second, input_pps);
-		} else if(_entry.first == "output") {
-			vnx::from_string(_entry.second, output);
-		} else if(_entry.first == "port") {
-			vnx::from_string(_entry.second, port);
-		} else if(_entry.first == "topic_msgs") {
-			vnx::from_string(_entry.second, topic_msgs);
-		}
+	if(auto _json = vnx::read_json(_in)) {
+		from_object(_json->to_object());
 	}
 }
 
 vnx::Object UbloxReceiverBase::to_object() const {
 	vnx::Object _object;
+	_object["__type"] = "automy.vehicle.UbloxReceiver";
 	_object["output"] = output;
 	_object["topic_msgs"] = topic_msgs;
 	_object["input_pps"] = input_pps;
@@ -109,6 +120,44 @@ void UbloxReceiverBase::from_object(const vnx::Object& _object) {
 	}
 }
 
+vnx::Variant UbloxReceiverBase::get_field(const std::string& _name) const {
+	if(_name == "output") {
+		return vnx::Variant(output);
+	}
+	if(_name == "topic_msgs") {
+		return vnx::Variant(topic_msgs);
+	}
+	if(_name == "input_pps") {
+		return vnx::Variant(input_pps);
+	}
+	if(_name == "port") {
+		return vnx::Variant(port);
+	}
+	if(_name == "baudrate") {
+		return vnx::Variant(baudrate);
+	}
+	if(_name == "antenna_pos") {
+		return vnx::Variant(antenna_pos);
+	}
+	return vnx::Variant();
+}
+
+void UbloxReceiverBase::set_field(const std::string& _name, const vnx::Variant& _value) {
+	if(_name == "output") {
+		_value.to(output);
+	} else if(_name == "topic_msgs") {
+		_value.to(topic_msgs);
+	} else if(_name == "input_pps") {
+		_value.to(input_pps);
+	} else if(_name == "port") {
+		_value.to(port);
+	} else if(_name == "baudrate") {
+		_value.to(baudrate);
+	} else if(_name == "antenna_pos") {
+		_value.to(antenna_pos);
+	}
+}
+
 /// \private
 std::ostream& operator<<(std::ostream& _out, const UbloxReceiverBase& _value) {
 	_value.write(_out);
@@ -121,106 +170,68 @@ std::istream& operator>>(std::istream& _in, UbloxReceiverBase& _value) {
 	return _in;
 }
 
-const vnx::TypeCode* UbloxReceiverBase::get_type_code() {
-	const vnx::TypeCode* type_code = vnx::get_type_code(vnx::Hash64(0x569529e56d14ec5bull));
+const vnx::TypeCode* UbloxReceiverBase::static_get_type_code() {
+	const vnx::TypeCode* type_code = vnx::get_type_code(VNX_TYPE_HASH);
 	if(!type_code) {
-		type_code = vnx::register_type_code(create_type_code());
+		type_code = vnx::register_type_code(static_create_type_code());
 	}
 	return type_code;
 }
 
-std::shared_ptr<vnx::TypeCode> UbloxReceiverBase::create_type_code() {
-	std::shared_ptr<vnx::TypeCode> type_code = std::make_shared<vnx::TypeCode>(true);
+std::shared_ptr<vnx::TypeCode> UbloxReceiverBase::static_create_type_code() {
+	auto type_code = std::make_shared<vnx::TypeCode>();
 	type_code->name = "automy.vehicle.UbloxReceiver";
 	type_code->type_hash = vnx::Hash64(0x569529e56d14ec5bull);
 	type_code->code_hash = vnx::Hash64(0x88e03adee15a2341ull);
-	type_code->methods.resize(2);
-	{
-		std::shared_ptr<vnx::TypeCode> call_type = std::make_shared<vnx::TypeCode>(true);
-		call_type->name = "automy.vehicle.UbloxReceiver.handle_automy_vehicle_PPS_Signal";
-		call_type->type_hash = vnx::Hash64(0x4569d59458dfbb62ull);
-		call_type->code_hash = vnx::Hash64(0x81eccb84eb3dc8f4ull);
-		call_type->is_method = true;
-		{
-			std::shared_ptr<vnx::TypeCode> return_type = std::make_shared<vnx::TypeCode>(true);
-			return_type->name = "automy.vehicle.UbloxReceiver.handle_automy_vehicle_PPS_Signal.return";
-			return_type->type_hash = vnx::Hash64(0x4514228adb74101aull);
-			return_type->code_hash = vnx::Hash64(0x18f5aabba6b41787ull);
-			return_type->is_return = true;
-			return_type->build();
-			call_type->return_type = vnx::register_type_code(return_type);
-		}
-		call_type->fields.resize(1);
-		{
-			vnx::TypeField& field = call_type->fields[0];
-			field.is_extended = true;
-			field.name = "sample";
-			field.code = {16};
-		}
-		call_type->build();
-		type_code->methods[0] = vnx::register_type_code(call_type);
-	}
-	{
-		std::shared_ptr<vnx::TypeCode> call_type = std::make_shared<vnx::TypeCode>(true);
-		call_type->name = "automy.vehicle.UbloxReceiver.handle_automy_vehicle_UBX_Packet";
-		call_type->type_hash = vnx::Hash64(0x66612abfe9a58e6cull);
-		call_type->code_hash = vnx::Hash64(0xd9433f13181d01a7ull);
-		call_type->is_method = true;
-		{
-			std::shared_ptr<vnx::TypeCode> return_type = std::make_shared<vnx::TypeCode>(true);
-			return_type->name = "automy.vehicle.UbloxReceiver.handle_automy_vehicle_UBX_Packet.return";
-			return_type->type_hash = vnx::Hash64(0xa7f62dfddebc503dull);
-			return_type->code_hash = vnx::Hash64(0x7b939af72d5be2c0ull);
-			return_type->is_return = true;
-			return_type->build();
-			call_type->return_type = vnx::register_type_code(return_type);
-		}
-		call_type->fields.resize(1);
-		{
-			vnx::TypeField& field = call_type->fields[0];
-			field.is_extended = true;
-			field.name = "sample";
-			field.code = {16};
-		}
-		call_type->build();
-		type_code->methods[1] = vnx::register_type_code(call_type);
-	}
+	type_code->is_native = true;
+	type_code->native_size = sizeof(::automy::vehicle::UbloxReceiverBase);
+	type_code->methods.resize(9);
+	type_code->methods[0] = ::vnx::ModuleInterface_vnx_get_config::static_get_type_code();
+	type_code->methods[1] = ::vnx::ModuleInterface_vnx_get_config_object::static_get_type_code();
+	type_code->methods[2] = ::vnx::ModuleInterface_vnx_get_module_info::static_get_type_code();
+	type_code->methods[3] = ::vnx::ModuleInterface_vnx_get_type_code::static_get_type_code();
+	type_code->methods[4] = ::vnx::ModuleInterface_vnx_restart::static_get_type_code();
+	type_code->methods[5] = ::vnx::ModuleInterface_vnx_self_test::static_get_type_code();
+	type_code->methods[6] = ::vnx::ModuleInterface_vnx_set_config::static_get_type_code();
+	type_code->methods[7] = ::vnx::ModuleInterface_vnx_set_config_object::static_get_type_code();
+	type_code->methods[8] = ::vnx::ModuleInterface_vnx_stop::static_get_type_code();
 	type_code->fields.resize(6);
 	{
-		vnx::TypeField& field = type_code->fields[0];
+		auto& field = type_code->fields[0];
 		field.is_extended = true;
 		field.name = "output";
 		field.value = vnx::to_string("vehicle.gps_info");
 		field.code = {12, 5};
 	}
 	{
-		vnx::TypeField& field = type_code->fields[1];
+		auto& field = type_code->fields[1];
 		field.is_extended = true;
 		field.name = "topic_msgs";
 		field.value = vnx::to_string("vehicle.ubx_msgs");
 		field.code = {12, 5};
 	}
 	{
-		vnx::TypeField& field = type_code->fields[2];
+		auto& field = type_code->fields[2];
 		field.is_extended = true;
 		field.name = "input_pps";
 		field.code = {12, 5};
 	}
 	{
-		vnx::TypeField& field = type_code->fields[3];
+		auto& field = type_code->fields[3];
 		field.is_extended = true;
 		field.name = "port";
 		field.value = vnx::to_string("/dev/ttyACM0");
-		field.code = {12, 5};
+		field.code = {32};
 	}
 	{
-		vnx::TypeField& field = type_code->fields[4];
+		auto& field = type_code->fields[4];
+		field.data_size = 4;
 		field.name = "baudrate";
 		field.value = vnx::to_string(115200);
 		field.code = {7};
 	}
 	{
-		vnx::TypeField& field = type_code->fields[5];
+		auto& field = type_code->fields[5];
 		field.is_extended = true;
 		field.name = "antenna_pos";
 		field.code = {21, 2, 3, 1, 10};
@@ -229,50 +240,84 @@ std::shared_ptr<vnx::TypeCode> UbloxReceiverBase::create_type_code() {
 	return type_code;
 }
 
-void UbloxReceiverBase::handle_switch(std::shared_ptr<const ::vnx::Sample> _sample) {
-	const uint64_t _type_hash = _sample->value->get_type_hash();
-	if(_type_hash == 0x392798cc0d63fa9bull) {
-		std::shared_ptr<const automy::vehicle::PPS_Signal> _value = std::dynamic_pointer_cast<const automy::vehicle::PPS_Signal>(_sample->value);
-		if(_value) {
-			handle(_value, _sample);
-		}
-	} else if(_type_hash == 0x1a2f67e7bc19cf95ull) {
-		std::shared_ptr<const automy::vehicle::UBX_Packet> _value = std::dynamic_pointer_cast<const automy::vehicle::UBX_Packet>(_sample->value);
-		if(_value) {
-			handle(_value, _sample);
+void UbloxReceiverBase::vnx_handle_switch(std::shared_ptr<const vnx::Value> _value) {
+	const auto* _type_code = _value->get_type_code();
+	while(_type_code) {
+		switch(_type_code->type_hash) {
+			case 0x392798cc0d63fa9bull:
+				handle(std::static_pointer_cast<const ::automy::vehicle::PPS_Signal>(_value));
+				return;
+			case 0x1a2f67e7bc19cf95ull:
+				handle(std::static_pointer_cast<const ::automy::vehicle::UBX_Packet>(_value));
+				return;
+			default:
+				_type_code = _type_code->super;
 		}
 	}
+	handle(std::static_pointer_cast<const vnx::Value>(_value));
 }
 
-bool UbloxReceiverBase::call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const vnx::TypeCode* _call_type, const vnx::TypeCode* _return_type) {
-	if(_call_type->type_hash == vnx::Hash64(0x4569d59458dfbb62ull)) {
-		::std::shared_ptr<const ::automy::vehicle::PPS_Signal> sample;
-		const char* const _buf = _in.read(_call_type->total_field_size);
-		if(_call_type->is_matched) {
+std::shared_ptr<vnx::Value> UbloxReceiverBase::vnx_call_switch(std::shared_ptr<const vnx::Value> _method, const vnx::request_id_t& _request_id) {
+	switch(_method->get_type_hash()) {
+		case 0xbbc7f1a01044d294ull: {
+			auto _args = std::static_pointer_cast<const ::vnx::ModuleInterface_vnx_get_config>(_method);
+			auto _return_value = ::vnx::ModuleInterface_vnx_get_config_return::create();
+			_return_value->_ret_0 = vnx_get_config(_args->name);
+			return _return_value;
 		}
-		for(const vnx::TypeField* _field : _call_type->ext_fields) {
-			switch(_field->native_index) {
-				case 0: vnx::read(_in, sample, _call_type, _field->code.data()); break;
-				default: vnx::skip(_in, _call_type, _field->code.data());
-			}
+		case 0x17f58f68bf83abc0ull: {
+			auto _args = std::static_pointer_cast<const ::vnx::ModuleInterface_vnx_get_config_object>(_method);
+			auto _return_value = ::vnx::ModuleInterface_vnx_get_config_object_return::create();
+			_return_value->_ret_0 = vnx_get_config_object();
+			return _return_value;
 		}
-		handle(sample);
-		return true;
-	} else if(_call_type->type_hash == vnx::Hash64(0x66612abfe9a58e6cull)) {
-		::std::shared_ptr<const ::automy::vehicle::UBX_Packet> sample;
-		const char* const _buf = _in.read(_call_type->total_field_size);
-		if(_call_type->is_matched) {
+		case 0xf6d82bdf66d034a1ull: {
+			auto _args = std::static_pointer_cast<const ::vnx::ModuleInterface_vnx_get_module_info>(_method);
+			auto _return_value = ::vnx::ModuleInterface_vnx_get_module_info_return::create();
+			_return_value->_ret_0 = vnx_get_module_info();
+			return _return_value;
 		}
-		for(const vnx::TypeField* _field : _call_type->ext_fields) {
-			switch(_field->native_index) {
-				case 0: vnx::read(_in, sample, _call_type, _field->code.data()); break;
-				default: vnx::skip(_in, _call_type, _field->code.data());
-			}
+		case 0x305ec4d628960e5dull: {
+			auto _args = std::static_pointer_cast<const ::vnx::ModuleInterface_vnx_get_type_code>(_method);
+			auto _return_value = ::vnx::ModuleInterface_vnx_get_type_code_return::create();
+			_return_value->_ret_0 = vnx_get_type_code();
+			return _return_value;
 		}
-		handle(sample);
-		return true;
+		case 0x9e95dc280cecca1bull: {
+			auto _args = std::static_pointer_cast<const ::vnx::ModuleInterface_vnx_restart>(_method);
+			auto _return_value = ::vnx::ModuleInterface_vnx_restart_return::create();
+			vnx_restart();
+			return _return_value;
+		}
+		case 0x6ce3775b41a42697ull: {
+			auto _args = std::static_pointer_cast<const ::vnx::ModuleInterface_vnx_self_test>(_method);
+			auto _return_value = ::vnx::ModuleInterface_vnx_self_test_return::create();
+			_return_value->_ret_0 = vnx_self_test();
+			return _return_value;
+		}
+		case 0x362aac91373958b7ull: {
+			auto _args = std::static_pointer_cast<const ::vnx::ModuleInterface_vnx_set_config>(_method);
+			auto _return_value = ::vnx::ModuleInterface_vnx_set_config_return::create();
+			vnx_set_config(_args->name, _args->value);
+			return _return_value;
+		}
+		case 0xca30f814f17f322full: {
+			auto _args = std::static_pointer_cast<const ::vnx::ModuleInterface_vnx_set_config_object>(_method);
+			auto _return_value = ::vnx::ModuleInterface_vnx_set_config_object_return::create();
+			vnx_set_config_object(_args->config);
+			return _return_value;
+		}
+		case 0x7ab49ce3d1bfc0d2ull: {
+			auto _args = std::static_pointer_cast<const ::vnx::ModuleInterface_vnx_stop>(_method);
+			auto _return_value = ::vnx::ModuleInterface_vnx_stop_return::create();
+			vnx_stop();
+			return _return_value;
+		}
 	}
-	return false;
+	auto _ex = vnx::NoSuchMethod::create();
+	_ex->dst_mac = vnx_request ? vnx_request->dst_mac : vnx::Hash64();
+	_ex->method = _method->get_type_name();
+	return _ex;
 }
 
 
@@ -283,26 +328,42 @@ bool UbloxReceiverBase::call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, 
 namespace vnx {
 
 void read(TypeInput& in, ::automy::vehicle::UbloxReceiverBase& value, const TypeCode* type_code, const uint16_t* code) {
+	if(code) {
+		switch(code[0]) {
+			case CODE_OBJECT:
+			case CODE_ALT_OBJECT: {
+				Object tmp;
+				vnx::read(in, tmp, type_code, code);
+				value.from_object(tmp);
+				return;
+			}
+			case CODE_DYNAMIC:
+			case CODE_ALT_DYNAMIC:
+				vnx::read_dynamic(in, value);
+				return;
+		}
+	}
 	if(!type_code) {
-		throw std::logic_error("read(): type_code == 0");
+		vnx::skip(in, type_code, code);
+		return;
 	}
 	if(code) {
 		switch(code[0]) {
 			case CODE_STRUCT: type_code = type_code->depends[code[1]]; break;
 			case CODE_ALT_STRUCT: type_code = type_code->depends[vnx::flip_bytes(code[1])]; break;
-			default: vnx::skip(in, type_code, code); return;
-		}
-	}
-	const char* const _buf = in.read(type_code->total_field_size);
-	if(type_code->is_matched) {
-		{
-			const vnx::TypeField* const _field = type_code->field_map[4];
-			if(_field) {
-				vnx::read_value(_buf + _field->offset, value.baudrate, _field->code.data());
+			default: {
+				vnx::skip(in, type_code, code);
+				return;
 			}
 		}
 	}
-	for(const vnx::TypeField* _field : type_code->ext_fields) {
+	const auto* const _buf = in.read(type_code->total_field_size);
+	if(type_code->is_matched) {
+		if(const auto* const _field = type_code->field_map[4]) {
+			vnx::read_value(_buf + _field->offset, value.baudrate, _field->code.data());
+		}
+	}
+	for(const auto* _field : type_code->ext_fields) {
 		switch(_field->native_index) {
 			case 0: vnx::read(in, value.output, type_code, _field->code.data()); break;
 			case 1: vnx::read(in, value.topic_msgs, type_code, _field->code.data()); break;
@@ -315,14 +376,19 @@ void read(TypeInput& in, ::automy::vehicle::UbloxReceiverBase& value, const Type
 }
 
 void write(TypeOutput& out, const ::automy::vehicle::UbloxReceiverBase& value, const TypeCode* type_code, const uint16_t* code) {
+	if(code && code[0] == CODE_OBJECT) {
+		vnx::write(out, value.to_object(), nullptr, code);
+		return;
+	}
 	if(!type_code || (code && code[0] == CODE_ANY)) {
-		type_code = vnx::write_type_code<::automy::vehicle::UbloxReceiverBase>(out);
+		type_code = automy::vehicle::vnx_native_type_code_UbloxReceiverBase;
+		out.write_type_code(type_code);
 		vnx::write_class_header<::automy::vehicle::UbloxReceiverBase>(out);
 	}
-	if(code && code[0] == CODE_STRUCT) {
+	else if(code && code[0] == CODE_STRUCT) {
 		type_code = type_code->depends[code[1]];
 	}
-	char* const _buf = out.write(4);
+	auto* const _buf = out.write(4);
 	vnx::write_value(_buf + 0, value.baudrate);
 	vnx::write(out, value.output, type_code, type_code->fields[0].code.data());
 	vnx::write(out, value.topic_msgs, type_code, type_code->fields[1].code.data());

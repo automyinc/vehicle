@@ -3,8 +3,32 @@
 
 #include <automy/vehicle/package.hxx>
 #include <automy/vehicle/UbloxReceiverClient.hxx>
-#include <vnx/Input.h>
-#include <vnx/Output.h>
+#include <automy/math/Vector3d.hpp>
+#include <automy/vehicle/PPS_Signal.hxx>
+#include <automy/vehicle/UBX_Packet.hxx>
+#include <vnx/Module.h>
+#include <vnx/ModuleInterface_vnx_get_config.hxx>
+#include <vnx/ModuleInterface_vnx_get_config_return.hxx>
+#include <vnx/ModuleInterface_vnx_get_config_object.hxx>
+#include <vnx/ModuleInterface_vnx_get_config_object_return.hxx>
+#include <vnx/ModuleInterface_vnx_get_module_info.hxx>
+#include <vnx/ModuleInterface_vnx_get_module_info_return.hxx>
+#include <vnx/ModuleInterface_vnx_get_type_code.hxx>
+#include <vnx/ModuleInterface_vnx_get_type_code_return.hxx>
+#include <vnx/ModuleInterface_vnx_restart.hxx>
+#include <vnx/ModuleInterface_vnx_restart_return.hxx>
+#include <vnx/ModuleInterface_vnx_self_test.hxx>
+#include <vnx/ModuleInterface_vnx_self_test_return.hxx>
+#include <vnx/ModuleInterface_vnx_set_config.hxx>
+#include <vnx/ModuleInterface_vnx_set_config_return.hxx>
+#include <vnx/ModuleInterface_vnx_set_config_object.hxx>
+#include <vnx/ModuleInterface_vnx_set_config_object_return.hxx>
+#include <vnx/ModuleInterface_vnx_stop.hxx>
+#include <vnx/ModuleInterface_vnx_stop_return.hxx>
+#include <vnx/TopicPtr.hpp>
+
+#include <vnx/Generic.hxx>
+#include <vnx/vnx.h>
 
 
 namespace automy {
@@ -20,40 +44,111 @@ UbloxReceiverClient::UbloxReceiverClient(vnx::Hash64 service_addr)
 {
 }
 
-void UbloxReceiverClient::handle(const ::std::shared_ptr<const ::automy::vehicle::PPS_Signal>& sample) {
-	std::shared_ptr<vnx::Binary> _argument_data = vnx::Binary::create();
-	vnx::BinaryOutputStream _stream_out(_argument_data.get());
-	vnx::TypeOutput _out(&_stream_out);
-	const vnx::TypeCode* _type_code = vnx::get_type_code(vnx::Hash64(0x4569d59458dfbb62ull));
-	{
-		vnx::write(_out, sample, _type_code, _type_code->fields[0].code.data());
+::vnx::Object UbloxReceiverClient::vnx_get_config_object() {
+	auto _method = ::vnx::ModuleInterface_vnx_get_config_object::create();
+	auto _return_value = vnx_request(_method, false);
+	if(auto _result = std::dynamic_pointer_cast<const ::vnx::ModuleInterface_vnx_get_config_object_return>(_return_value)) {
+		return _result->_ret_0;
+	} else if(_return_value && !_return_value->is_void()) {
+		return _return_value->get_field_by_index(0).to<::vnx::Object>();
+	} else {
+		throw std::logic_error("UbloxReceiverClient: invalid return value");
 	}
-	_out.flush();
-	_argument_data->type_code = _type_code;
-	vnx_request(_argument_data);
 }
 
-void UbloxReceiverClient::handle_async(const ::std::shared_ptr<const ::automy::vehicle::PPS_Signal>& sample) {
-	vnx_is_async = true;
-	handle(sample);
-}
-
-void UbloxReceiverClient::handle(const ::std::shared_ptr<const ::automy::vehicle::UBX_Packet>& sample) {
-	std::shared_ptr<vnx::Binary> _argument_data = vnx::Binary::create();
-	vnx::BinaryOutputStream _stream_out(_argument_data.get());
-	vnx::TypeOutput _out(&_stream_out);
-	const vnx::TypeCode* _type_code = vnx::get_type_code(vnx::Hash64(0x66612abfe9a58e6cull));
-	{
-		vnx::write(_out, sample, _type_code, _type_code->fields[0].code.data());
+::vnx::Variant UbloxReceiverClient::vnx_get_config(const std::string& name) {
+	auto _method = ::vnx::ModuleInterface_vnx_get_config::create();
+	_method->name = name;
+	auto _return_value = vnx_request(_method, false);
+	if(auto _result = std::dynamic_pointer_cast<const ::vnx::ModuleInterface_vnx_get_config_return>(_return_value)) {
+		return _result->_ret_0;
+	} else if(_return_value && !_return_value->is_void()) {
+		return _return_value->get_field_by_index(0).to<::vnx::Variant>();
+	} else {
+		throw std::logic_error("UbloxReceiverClient: invalid return value");
 	}
-	_out.flush();
-	_argument_data->type_code = _type_code;
-	vnx_request(_argument_data);
 }
 
-void UbloxReceiverClient::handle_async(const ::std::shared_ptr<const ::automy::vehicle::UBX_Packet>& sample) {
-	vnx_is_async = true;
-	handle(sample);
+void UbloxReceiverClient::vnx_set_config_object(const ::vnx::Object& config) {
+	auto _method = ::vnx::ModuleInterface_vnx_set_config_object::create();
+	_method->config = config;
+	vnx_request(_method, false);
+}
+
+void UbloxReceiverClient::vnx_set_config_object_async(const ::vnx::Object& config) {
+	auto _method = ::vnx::ModuleInterface_vnx_set_config_object::create();
+	_method->config = config;
+	vnx_request(_method, true);
+}
+
+void UbloxReceiverClient::vnx_set_config(const std::string& name, const ::vnx::Variant& value) {
+	auto _method = ::vnx::ModuleInterface_vnx_set_config::create();
+	_method->name = name;
+	_method->value = value;
+	vnx_request(_method, false);
+}
+
+void UbloxReceiverClient::vnx_set_config_async(const std::string& name, const ::vnx::Variant& value) {
+	auto _method = ::vnx::ModuleInterface_vnx_set_config::create();
+	_method->name = name;
+	_method->value = value;
+	vnx_request(_method, true);
+}
+
+::vnx::TypeCode UbloxReceiverClient::vnx_get_type_code() {
+	auto _method = ::vnx::ModuleInterface_vnx_get_type_code::create();
+	auto _return_value = vnx_request(_method, false);
+	if(auto _result = std::dynamic_pointer_cast<const ::vnx::ModuleInterface_vnx_get_type_code_return>(_return_value)) {
+		return _result->_ret_0;
+	} else if(_return_value && !_return_value->is_void()) {
+		return _return_value->get_field_by_index(0).to<::vnx::TypeCode>();
+	} else {
+		throw std::logic_error("UbloxReceiverClient: invalid return value");
+	}
+}
+
+std::shared_ptr<const ::vnx::ModuleInfo> UbloxReceiverClient::vnx_get_module_info() {
+	auto _method = ::vnx::ModuleInterface_vnx_get_module_info::create();
+	auto _return_value = vnx_request(_method, false);
+	if(auto _result = std::dynamic_pointer_cast<const ::vnx::ModuleInterface_vnx_get_module_info_return>(_return_value)) {
+		return _result->_ret_0;
+	} else if(_return_value && !_return_value->is_void()) {
+		return _return_value->get_field_by_index(0).to<std::shared_ptr<const ::vnx::ModuleInfo>>();
+	} else {
+		throw std::logic_error("UbloxReceiverClient: invalid return value");
+	}
+}
+
+void UbloxReceiverClient::vnx_restart() {
+	auto _method = ::vnx::ModuleInterface_vnx_restart::create();
+	vnx_request(_method, false);
+}
+
+void UbloxReceiverClient::vnx_restart_async() {
+	auto _method = ::vnx::ModuleInterface_vnx_restart::create();
+	vnx_request(_method, true);
+}
+
+void UbloxReceiverClient::vnx_stop() {
+	auto _method = ::vnx::ModuleInterface_vnx_stop::create();
+	vnx_request(_method, false);
+}
+
+void UbloxReceiverClient::vnx_stop_async() {
+	auto _method = ::vnx::ModuleInterface_vnx_stop::create();
+	vnx_request(_method, true);
+}
+
+vnx::bool_t UbloxReceiverClient::vnx_self_test() {
+	auto _method = ::vnx::ModuleInterface_vnx_self_test::create();
+	auto _return_value = vnx_request(_method, false);
+	if(auto _result = std::dynamic_pointer_cast<const ::vnx::ModuleInterface_vnx_self_test_return>(_return_value)) {
+		return _result->_ret_0;
+	} else if(_return_value && !_return_value->is_void()) {
+		return _return_value->get_field_by_index(0).to<vnx::bool_t>();
+	} else {
+		throw std::logic_error("UbloxReceiverClient: invalid return value");
+	}
 }
 
 

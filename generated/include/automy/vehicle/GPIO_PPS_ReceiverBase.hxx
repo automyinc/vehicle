@@ -6,51 +6,74 @@
 
 #include <automy/vehicle/package.hxx>
 #include <vnx/Module.h>
-#include <vnx/TopicPtr.h>
+#include <vnx/TopicPtr.hpp>
 
 
 namespace automy {
 namespace vehicle {
 
-class GPIO_PPS_ReceiverBase : public ::vnx::Module {
+class AUTOMY_VEHICLE_EXPORT GPIO_PPS_ReceiverBase : public ::vnx::Module {
 public:
 	
 	::vnx::TopicPtr output = "vehicle.pps_signal";
-	::std::string device;
+	std::string device;
 	
 	typedef ::vnx::Module Super;
 	
 	static const vnx::Hash64 VNX_TYPE_HASH;
 	static const vnx::Hash64 VNX_CODE_HASH;
 	
+	static constexpr uint64_t VNX_TYPE_ID = 0x892a6a792097fbd7ull;
+	
 	GPIO_PPS_ReceiverBase(const std::string& _vnx_name);
 	
-	vnx::Hash64 get_type_hash() const;
-	const char* get_type_name() const;
+	vnx::Hash64 get_type_hash() const override;
+	std::string get_type_name() const override;
+	const vnx::TypeCode* get_type_code() const override;
 	
-	void read(std::istream& _in);
-	void write(std::ostream& _out) const;
+	void read(std::istream& _in) override;
+	void write(std::ostream& _out) const override;
 	
-	void accept(vnx::Visitor& _visitor) const;
+	template<typename T>
+	void accept_generic(T& _visitor) const;
+	void accept(vnx::Visitor& _visitor) const override;
 	
-	vnx::Object to_object() const;
-	void from_object(const vnx::Object& object);
+	vnx::Object to_object() const override;
+	void from_object(const vnx::Object& object) override;
+	
+	vnx::Variant get_field(const std::string& name) const override;
+	void set_field(const std::string& name, const vnx::Variant& value) override;
 	
 	friend std::ostream& operator<<(std::ostream& _out, const GPIO_PPS_ReceiverBase& _value);
 	friend std::istream& operator>>(std::istream& _in, GPIO_PPS_ReceiverBase& _value);
 	
-	static const vnx::TypeCode* get_type_code();
-	static std::shared_ptr<vnx::TypeCode> create_type_code();
+	static const vnx::TypeCode* static_get_type_code();
+	static std::shared_ptr<vnx::TypeCode> static_create_type_code();
 	
 protected:
+	using Super::handle;
 	
-	void handle_switch(std::shared_ptr<const ::vnx::Sample> _sample);
-	bool call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const vnx::TypeCode* _call_type, const vnx::TypeCode* _return_type);
+	
+	void vnx_handle_switch(std::shared_ptr<const vnx::Value> _value) override;
+	std::shared_ptr<vnx::Value> vnx_call_switch(std::shared_ptr<const vnx::Value> _method, const vnx::request_id_t& _request_id) override;
 	
 };
+
+template<typename T>
+void GPIO_PPS_ReceiverBase::accept_generic(T& _visitor) const {
+	_visitor.template type_begin<GPIO_PPS_ReceiverBase>(2);
+	_visitor.type_field("output", 0); _visitor.accept(output);
+	_visitor.type_field("device", 1); _visitor.accept(device);
+	_visitor.template type_end<GPIO_PPS_ReceiverBase>(2);
+}
 
 
 } // namespace automy
 } // namespace vehicle
+
+
+namespace vnx {
+
+} // vnx
 
 #endif // INCLUDE_automy_vehicle_GPIO_PPS_ReceiverBase_HXX_

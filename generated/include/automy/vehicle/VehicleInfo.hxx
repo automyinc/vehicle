@@ -12,48 +12,78 @@
 namespace automy {
 namespace vehicle {
 
-class VehicleInfo : public ::vnx::Value {
+class AUTOMY_VEHICLE_EXPORT VehicleInfo : public ::vnx::Value {
 public:
 	
-	::int64_t time = 0;
-	::vnx::float64_t speed = 0;
-	::vnx::float64_t steering_wheel_angle = 0;
-	::vnx::float64_t steering_wheel_velocity = 0;
+	int64_t time = 0;
+	vnx::float64_t speed = 0;
+	vnx::float64_t steering_wheel_angle = 0;
+	vnx::float64_t steering_wheel_velocity = 0;
 	::automy::vehicle::VehicleDimensions dimensions;
-	::vnx::float32_t steering_ratio = 0;
+	vnx::float32_t steering_ratio = 0;
 	
 	typedef ::vnx::Value Super;
 	
 	static const vnx::Hash64 VNX_TYPE_HASH;
 	static const vnx::Hash64 VNX_CODE_HASH;
 	
-	vnx::Hash64 get_type_hash() const;
-	const char* get_type_name() const;
+	static constexpr uint64_t VNX_TYPE_ID = 0xe1eb64ab47c30856ull;
+	
+	VehicleInfo() {}
+	
+	vnx::Hash64 get_type_hash() const override;
+	std::string get_type_name() const override;
+	const vnx::TypeCode* get_type_code() const override;
 	
 	static std::shared_ptr<VehicleInfo> create();
-	std::shared_ptr<vnx::Value> clone() const;
+	std::shared_ptr<vnx::Value> clone() const override;
 	
-	void read(vnx::TypeInput& _in, const vnx::TypeCode* _type_code, const uint16_t* _code);
-	void write(vnx::TypeOutput& _out, const vnx::TypeCode* _type_code, const uint16_t* _code) const;
+	void read(vnx::TypeInput& _in, const vnx::TypeCode* _type_code, const uint16_t* _code) override;
+	void write(vnx::TypeOutput& _out, const vnx::TypeCode* _type_code, const uint16_t* _code) const override;
 	
-	void read(std::istream& _in);
-	void write(std::ostream& _out) const;
+	void read(std::istream& _in) override;
+	void write(std::ostream& _out) const override;
 	
-	void accept(vnx::Visitor& _visitor) const;
+	template<typename T>
+	void accept_generic(T& _visitor) const;
+	void accept(vnx::Visitor& _visitor) const override;
 	
-	vnx::Object to_object() const;
-	void from_object(const vnx::Object& object);
+	vnx::Object to_object() const override;
+	void from_object(const vnx::Object& object) override;
+	
+	vnx::Variant get_field(const std::string& name) const override;
+	void set_field(const std::string& name, const vnx::Variant& value) override;
 	
 	friend std::ostream& operator<<(std::ostream& _out, const VehicleInfo& _value);
 	friend std::istream& operator>>(std::istream& _in, VehicleInfo& _value);
 	
-	static const vnx::TypeCode* get_type_code();
-	static std::shared_ptr<vnx::TypeCode> create_type_code();
+	static const vnx::TypeCode* static_get_type_code();
+	static std::shared_ptr<vnx::TypeCode> static_create_type_code();
+	
+protected:
+	std::shared_ptr<vnx::Value> vnx_call_switch(std::shared_ptr<const vnx::Value> _method) override;
 	
 };
+
+template<typename T>
+void VehicleInfo::accept_generic(T& _visitor) const {
+	_visitor.template type_begin<VehicleInfo>(6);
+	_visitor.type_field("time", 0); _visitor.accept(time);
+	_visitor.type_field("speed", 1); _visitor.accept(speed);
+	_visitor.type_field("steering_wheel_angle", 2); _visitor.accept(steering_wheel_angle);
+	_visitor.type_field("steering_wheel_velocity", 3); _visitor.accept(steering_wheel_velocity);
+	_visitor.type_field("dimensions", 4); _visitor.accept(dimensions);
+	_visitor.type_field("steering_ratio", 5); _visitor.accept(steering_ratio);
+	_visitor.template type_end<VehicleInfo>(6);
+}
 
 
 } // namespace automy
 } // namespace vehicle
+
+
+namespace vnx {
+
+} // vnx
 
 #endif // INCLUDE_automy_vehicle_VehicleInfo_HXX_

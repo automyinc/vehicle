@@ -5,53 +5,81 @@
 #define INCLUDE_automy_vehicle_IMU_Info_HXX_
 
 #include <automy/vehicle/package.hxx>
-#include <automy/math/Vector3f.h>
+#include <automy/math/Vector3f.hpp>
 #include <vnx/Value.h>
 
 
 namespace automy {
 namespace vehicle {
 
-class IMU_Info : public ::vnx::Value {
+class AUTOMY_VEHICLE_EXPORT IMU_Info : public ::vnx::Value {
 public:
 	
-	::int64_t time = 0;
+	int64_t time = 0;
 	::automy::math::Vector3f gyro_rates;
 	::automy::math::Vector3f acceleration;
-	::vnx::float32_t temperature = 0;
+	vnx::float32_t temperature = 0;
 	
 	typedef ::vnx::Value Super;
 	
 	static const vnx::Hash64 VNX_TYPE_HASH;
 	static const vnx::Hash64 VNX_CODE_HASH;
 	
-	vnx::Hash64 get_type_hash() const;
-	const char* get_type_name() const;
+	static constexpr uint64_t VNX_TYPE_ID = 0x29dd9d37c10e981full;
+	
+	IMU_Info() {}
+	
+	vnx::Hash64 get_type_hash() const override;
+	std::string get_type_name() const override;
+	const vnx::TypeCode* get_type_code() const override;
 	
 	static std::shared_ptr<IMU_Info> create();
-	std::shared_ptr<vnx::Value> clone() const;
+	std::shared_ptr<vnx::Value> clone() const override;
 	
-	void read(vnx::TypeInput& _in, const vnx::TypeCode* _type_code, const uint16_t* _code);
-	void write(vnx::TypeOutput& _out, const vnx::TypeCode* _type_code, const uint16_t* _code) const;
+	void read(vnx::TypeInput& _in, const vnx::TypeCode* _type_code, const uint16_t* _code) override;
+	void write(vnx::TypeOutput& _out, const vnx::TypeCode* _type_code, const uint16_t* _code) const override;
 	
-	void read(std::istream& _in);
-	void write(std::ostream& _out) const;
+	void read(std::istream& _in) override;
+	void write(std::ostream& _out) const override;
 	
-	void accept(vnx::Visitor& _visitor) const;
+	template<typename T>
+	void accept_generic(T& _visitor) const;
+	void accept(vnx::Visitor& _visitor) const override;
 	
-	vnx::Object to_object() const;
-	void from_object(const vnx::Object& object);
+	vnx::Object to_object() const override;
+	void from_object(const vnx::Object& object) override;
+	
+	vnx::Variant get_field(const std::string& name) const override;
+	void set_field(const std::string& name, const vnx::Variant& value) override;
 	
 	friend std::ostream& operator<<(std::ostream& _out, const IMU_Info& _value);
 	friend std::istream& operator>>(std::istream& _in, IMU_Info& _value);
 	
-	static const vnx::TypeCode* get_type_code();
-	static std::shared_ptr<vnx::TypeCode> create_type_code();
+	static const vnx::TypeCode* static_get_type_code();
+	static std::shared_ptr<vnx::TypeCode> static_create_type_code();
+	
+protected:
+	std::shared_ptr<vnx::Value> vnx_call_switch(std::shared_ptr<const vnx::Value> _method) override;
 	
 };
+
+template<typename T>
+void IMU_Info::accept_generic(T& _visitor) const {
+	_visitor.template type_begin<IMU_Info>(4);
+	_visitor.type_field("time", 0); _visitor.accept(time);
+	_visitor.type_field("gyro_rates", 1); _visitor.accept(gyro_rates);
+	_visitor.type_field("acceleration", 2); _visitor.accept(acceleration);
+	_visitor.type_field("temperature", 3); _visitor.accept(temperature);
+	_visitor.template type_end<IMU_Info>(4);
+}
 
 
 } // namespace automy
 } // namespace vehicle
+
+
+namespace vnx {
+
+} // vnx
 
 #endif // INCLUDE_automy_vehicle_IMU_Info_HXX_

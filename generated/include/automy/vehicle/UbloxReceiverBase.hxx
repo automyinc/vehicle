@@ -5,24 +5,24 @@
 #define INCLUDE_automy_vehicle_UbloxReceiverBase_HXX_
 
 #include <automy/vehicle/package.hxx>
-#include <automy/math/Vector3d.h>
+#include <automy/math/Vector3d.hpp>
 #include <automy/vehicle/PPS_Signal.hxx>
 #include <automy/vehicle/UBX_Packet.hxx>
 #include <vnx/Module.h>
-#include <vnx/TopicPtr.h>
+#include <vnx/TopicPtr.hpp>
 
 
 namespace automy {
 namespace vehicle {
 
-class UbloxReceiverBase : public ::vnx::Module {
+class AUTOMY_VEHICLE_EXPORT UbloxReceiverBase : public ::vnx::Module {
 public:
 	
 	::vnx::TopicPtr output = "vehicle.gps_info";
 	::vnx::TopicPtr topic_msgs = "vehicle.ubx_msgs";
 	::vnx::TopicPtr input_pps;
-	::std::string port = "/dev/ttyACM0";
-	::int32_t baudrate = 115200;
+	std::string port = "/dev/ttyACM0";
+	int32_t baudrate = 115200;
 	::automy::math::Vector3d antenna_pos;
 	
 	typedef ::vnx::Module Super;
@@ -30,38 +30,63 @@ public:
 	static const vnx::Hash64 VNX_TYPE_HASH;
 	static const vnx::Hash64 VNX_CODE_HASH;
 	
+	static constexpr uint64_t VNX_TYPE_ID = 0x569529e56d14ec5bull;
+	
 	UbloxReceiverBase(const std::string& _vnx_name);
 	
-	vnx::Hash64 get_type_hash() const;
-	const char* get_type_name() const;
+	vnx::Hash64 get_type_hash() const override;
+	std::string get_type_name() const override;
+	const vnx::TypeCode* get_type_code() const override;
 	
-	void read(std::istream& _in);
-	void write(std::ostream& _out) const;
+	void read(std::istream& _in) override;
+	void write(std::ostream& _out) const override;
 	
-	void accept(vnx::Visitor& _visitor) const;
+	template<typename T>
+	void accept_generic(T& _visitor) const;
+	void accept(vnx::Visitor& _visitor) const override;
 	
-	vnx::Object to_object() const;
-	void from_object(const vnx::Object& object);
+	vnx::Object to_object() const override;
+	void from_object(const vnx::Object& object) override;
+	
+	vnx::Variant get_field(const std::string& name) const override;
+	void set_field(const std::string& name, const vnx::Variant& value) override;
 	
 	friend std::ostream& operator<<(std::ostream& _out, const UbloxReceiverBase& _value);
 	friend std::istream& operator>>(std::istream& _in, UbloxReceiverBase& _value);
 	
-	static const vnx::TypeCode* get_type_code();
-	static std::shared_ptr<vnx::TypeCode> create_type_code();
+	static const vnx::TypeCode* static_get_type_code();
+	static std::shared_ptr<vnx::TypeCode> static_create_type_code();
 	
 protected:
-	virtual void handle(std::shared_ptr<const ::automy::vehicle::PPS_Signal> _value, std::shared_ptr<const ::vnx::Sample> _sample) { handle(_value); }
-	virtual void handle(std::shared_ptr<const ::automy::vehicle::PPS_Signal> _value) {}
-	virtual void handle(std::shared_ptr<const ::automy::vehicle::UBX_Packet> _value, std::shared_ptr<const ::vnx::Sample> _sample) { handle(_value); }
-	virtual void handle(std::shared_ptr<const ::automy::vehicle::UBX_Packet> _value) {}
+	using Super::handle;
 	
-	void handle_switch(std::shared_ptr<const ::vnx::Sample> _sample);
-	bool call_switch(vnx::TypeInput& _in, vnx::TypeOutput& _out, const vnx::TypeCode* _call_type, const vnx::TypeCode* _return_type);
+	virtual void handle(std::shared_ptr<const ::automy::vehicle::UBX_Packet> _value) {}
+	virtual void handle(std::shared_ptr<const ::automy::vehicle::PPS_Signal> _value) {}
+	
+	void vnx_handle_switch(std::shared_ptr<const vnx::Value> _value) override;
+	std::shared_ptr<vnx::Value> vnx_call_switch(std::shared_ptr<const vnx::Value> _method, const vnx::request_id_t& _request_id) override;
 	
 };
+
+template<typename T>
+void UbloxReceiverBase::accept_generic(T& _visitor) const {
+	_visitor.template type_begin<UbloxReceiverBase>(6);
+	_visitor.type_field("output", 0); _visitor.accept(output);
+	_visitor.type_field("topic_msgs", 1); _visitor.accept(topic_msgs);
+	_visitor.type_field("input_pps", 2); _visitor.accept(input_pps);
+	_visitor.type_field("port", 3); _visitor.accept(port);
+	_visitor.type_field("baudrate", 4); _visitor.accept(baudrate);
+	_visitor.type_field("antenna_pos", 5); _visitor.accept(antenna_pos);
+	_visitor.template type_end<UbloxReceiverBase>(6);
+}
 
 
 } // namespace automy
 } // namespace vehicle
+
+
+namespace vnx {
+
+} // vnx
 
 #endif // INCLUDE_automy_vehicle_UbloxReceiverBase_HXX_
